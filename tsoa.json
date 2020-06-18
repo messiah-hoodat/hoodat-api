@@ -4,11 +4,13 @@
     "src/**/*.controller.ts"
   ],
   "spec": {
+    "basePath": "/api",
     "outputDirectory": "./api/dist",
     "specVersion": 3
   },
   "routes": {
     "basePath": "/api",
+    "entryFile": "./src/main.ts",
     "routesDir": "./src/routes",
     "middleware": "express"
   }
