@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "outDir": "../dist",
+    "baseUrl": "",
+    "module": "commonjs"
+  },
+}
