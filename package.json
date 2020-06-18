@@ -4,8 +4,8 @@
   "description": "Backend API service for Hoodat mobile app",
   "main": "src/main.js",
   "scripts": {
-    "build:routes": "tsoa routes",
-    "build:swagger": "tsoa swagger",
+    "build:routes": "mkdir -p src/routes && tsoa routes",
+    "build:swagger": "mkdir -p api && mkdir -p api/dist && tsoa swagger",
     "build:ts": "tsc -p src",
     "build:all": "npm run build:routes && npm run build:swagger && npm run build:ts",
     "serve": "node dist/main.js",
