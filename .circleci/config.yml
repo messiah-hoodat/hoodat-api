@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - heroku/install
-      - run: heroku stack:set --app hoodat-api container
+      - run: heroku stack:set --app $HEROKU_APP_NAME container
       - heroku/deploy-via-git
 
 workflows:
