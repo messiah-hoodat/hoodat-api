@@ -7,9 +7,9 @@
     "build:routes": "mkdir -p src/routes && npx tsoa routes",
     "build:swagger": "mkdir -p api/dist && npx tsoa swagger",
     "build:ts": "npx tsc -p src",
-    "build:all": "npm run build:routes && npm run build:swagger && npm run build:ts",
+    "build": "npm run build:routes && npm run build:swagger && npm run build:ts",
     "serve": "node dist/main.js",
-    "start": "npm run build:all && npm run serve"
+    "start": "npm run build && npm run serve"
   },
   "author": "Eric Weischedel",
   "dependencies": {
