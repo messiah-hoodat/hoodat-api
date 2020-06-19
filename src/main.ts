@@ -3,7 +3,7 @@ import * as swaggerUi from 'swagger-ui-express';
 import { RegisterRoutes } from './routes/routes';
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 RegisterRoutes(app);
 
