@@ -16,6 +16,7 @@ jobs:
     steps:
       - checkout
       - heroku/install
+      - run: heroku stack:set heroku-18
       - heroku/deploy-via-git
 
 workflows:
