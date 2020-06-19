@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - heroku/install
-      - run: heroku stack:set --app hoodat-api heroku-18 
+      - run: heroku stack:set --app hoodat-api container
       - heroku/deploy-via-git
 
 workflows:
