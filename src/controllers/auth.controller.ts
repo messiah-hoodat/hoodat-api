@@ -9,10 +9,6 @@ interface LoginOutput {
   authToken: string,
 }
 
-interface LogoutOutput {
-  message: string
-}
-
 interface RegisterInput {
   email: string,
   password: string,
