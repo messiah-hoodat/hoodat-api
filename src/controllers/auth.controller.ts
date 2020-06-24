@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Route, Tags, Query, Body, Path } from 'tsoa';
 
 interface LoginInput {
-  username: string,
+  email: string,
   password: string
 }
 
