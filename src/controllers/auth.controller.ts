@@ -13,9 +13,17 @@ interface LogoutOutput {
   message: string
 }
 
+interface RegisterInput {
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+}
+
 @Route('/auth')
 @Tags('Auth')
 export class UserController extends Controller {
+
   @Post('/login')
   public async login(@Body() requestBody: LoginInput): Promise<LoginOutput> {
     return {
@@ -29,4 +37,12 @@ export class UserController extends Controller {
       message: "Successfully logged out."
     }
   }
+
+  @Post('/register')
+  public async register(@Body() requestBody: RegisterInput): Promise<LoginOutput> {
+    return {
+      authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    }
+  }
+
 }
