@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Route, Tags, Query, Body, Path } from 'tsoa';
+import { Controller, Post, Get, Route, Tags, Query, Body, Path, Security } from 'tsoa';
 
 interface User {
   email: string,
@@ -10,8 +10,9 @@ interface User {
 @Tags('Users')
 export class UserController {
 
+  @Security('jwt')
   @Get('{userId}')
-  public async getUser(@Path() userId: string, @Query() token: string): Promise<User> {
+  public async getUser(@Path() userId: string): Promise<User> {
     return {
       email: "johndoe@gmail.com",
       firstName: "John",
