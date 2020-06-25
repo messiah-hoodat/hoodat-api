@@ -1,4 +1,5 @@
 import { Controller, Post, Get, Route, Tags, Query, Body, Path } from 'tsoa';
+import * as jwt from "jsonwebtoken";
 
 interface LoginInput {
   email: string,
@@ -21,10 +22,9 @@ interface RegisterInput {
 export class AuthController extends Controller {
 
   @Post('/request-token')
-  public async login(@Body() requestBody: LoginInput): Promise<LoginOutput> {
-    return {
-      authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-    }
+  public async login(@Body() requestBody: LoginInput): Promise<any> {
+    var token = jwt.sign({ userId: '5843543' }, process.env.TOKEN_SECRET);
+    return token;
   }
 
   @Post('/register')

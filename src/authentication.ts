@@ -16,7 +16,7 @@ if (securityName === "jwt") {
       if (!token) {
         reject(new Error("No token provided"));
       }
-      jwt.verify(token, "[secret]", function (err: any, decoded: any) {
+      jwt.verify(token, process.env.TOKEN_SECRET, function (err: any, decoded: any) {
         if (err) {
           reject(err);
         } else {
