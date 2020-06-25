@@ -10,7 +10,7 @@ interface User {
 @Tags('Users')
 export class UserController {
 
-  @Post('{userId}')
+  @Get('{userId}')
   public async getUser(@Path() userId: string, @Query() token: string): Promise<User> {
     return {
       email: "johndoe@gmail.com",
