@@ -18,7 +18,7 @@ interface RegisterInput {
 
 @Route('/auth')
 @Tags('Auth')
-export class UserController extends Controller {
+export class AuthController extends Controller {
 
   @Post('/request-token')
   public async login(@Body() requestBody: LoginInput): Promise<LoginOutput> {
