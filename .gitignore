@@ -1,5 +1,5 @@
 # Routes
-src/routes
+src/routes/routes.ts
 
 # Logs
 logs
