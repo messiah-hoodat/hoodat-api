@@ -4,13 +4,14 @@ import * as mongoose from 'mongoose';
 import * as swaggerUi from 'swagger-ui-express';
 
 import { RegisterRoutes } from './routes/routes';
+import { errorHandler } from './validation/errorHandler';
 
 dotenv.config();
 
 const { DB_CONNECTION_STRING, PORT } = process.env;
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
 mongoose.connect(
   DB_CONNECTION_STRING,
@@ -27,7 +28,9 @@ mongoose.connect(
 RegisterRoutes(app);
 
 const swaggerDocument = require('../api/dist/swagger.json');
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use(errorHandler);
 
 const port = PORT || 8000;
 app.listen(port, () => console.log(`Server started listening to port ${port}.`));
