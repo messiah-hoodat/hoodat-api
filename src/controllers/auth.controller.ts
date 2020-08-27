@@ -44,9 +44,7 @@ export class AuthController extends Controller {
       throw Boom.conflict(`Username '${requestBody.username}' already exists`);
     }
 
-    const userId = '123';
-
-    const user = new User({ userId, ...requestBody });
+    const user = new User({...requestBody });
 
     try {
       await user.save();
@@ -55,7 +53,7 @@ export class AuthController extends Controller {
       return err;
     }
 
-    return { code: 200, message: 'Successfully signed up user', userId };
+    return { code: 200, message: 'Successfully signed up user', user };
   }
 
 }
