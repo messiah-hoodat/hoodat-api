@@ -1,20 +1,18 @@
-import { Controller, Post, Get, Route, Tags, Query, Body, Path } from 'tsoa';
-import * as jwt from "jsonwebtoken";
+import { Controller, Post, Get, Route, Tags, Query, Response, Body, Path, Request } from 'tsoa';
+import * as jwt from 'jsonwebtoken';
+import * as Boom from '@hapi/boom';
+import * as express from 'express';
 
 import User from '../models/User';
 
 interface LoginInput {
-  email: string,
+  username: string,
   password: string
-}
-
-interface LoginOutput {
-  authToken: string,
 }
 
 interface SignUpInput {
   name: string,
-  email: string,
+  username: string,
   password: string,
 }
 
@@ -29,7 +27,23 @@ export class AuthController extends Controller {
   }
 
   @Post('/sign-up')
-  public async signUp(@Body() requestBody: SignUpInput): Promise<any> {
+  public async signUp(
+    @Body() requestBody: SignUpInput,
+    @Request() req: express.Request
+  ): Promise<any> {
+    // Check if username already exists
+    let existingUser;
+    try {
+      existingUser = await User.findOne({ username: requestBody.username });
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+
+    if (existingUser) {
+      throw Boom.conflict(`Username '${requestBody.username}' already exists`);
+    }
+
     const userId = '123';
 
     const user = new User({ userId, ...requestBody });
