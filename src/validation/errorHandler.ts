@@ -19,7 +19,7 @@ export function errorHandler(
 
   if (Boom.isBoom(err)) {
     console.warn(`Caught Boom Error for ${req.path}:`, err.output.payload);
-    return res.status(err.output.statusCode).json(err.output.payload);
+    return res.status(err.output.statusCode).json(err);
   }
 
   if (err instanceof Error) {

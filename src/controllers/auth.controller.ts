@@ -1,10 +1,18 @@
-import { Controller, Post, Get, Route, Tags, Query, Response, Body, Path, Request } from 'tsoa';
-import * as jwt from 'jsonwebtoken';
 import * as Boom from '@hapi/boom';
 import * as express from 'express';
+import * as jwt from 'jsonwebtoken';
+import {
+  Controller,
+  Post,
+  Route,
+  Tags,
+  Body,
+  Request,
+} from 'tsoa';
 import { hashSync } from 'bcrypt';
 
 import User from '../models/User';
+import { signUpInputSchema } from '../schemas/signUpInputSchema';
 
 interface LoginInput {
   username: string,
@@ -32,6 +40,13 @@ export class AuthController extends Controller {
     @Body() requestBody: SignUpInput,
     @Request() req: express.Request
   ): Promise<any> {
+    // Validate input
+    try {
+      await signUpInputSchema.validateAsync(requestBody);
+    } catch (err) {
+      throw Boom.badRequest('Validation failed', err)
+    }
+
     // Check if username already exists
     let existingUser;
     try {
@@ -40,7 +55,6 @@ export class AuthController extends Controller {
       console.log(err);
       return err;
     }
-
     if (existingUser) {
       throw Boom.conflict(`Username '${requestBody.username}' already exists`);
     }
@@ -49,7 +63,7 @@ export class AuthController extends Controller {
     requestBody.password = hashSync(requestBody.password, 10);
 
     // Create a new user
-    const user = new User({...requestBody });
+    const user = new User(requestBody);
     try {
       await user.save();
     } catch (err) {
