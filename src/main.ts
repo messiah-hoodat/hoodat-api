@@ -28,7 +28,7 @@ mongoose.connect(
 RegisterRoutes(app);
 
 const swaggerDocument = require('../api/dist/swagger.json');
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(errorHandler);
 
