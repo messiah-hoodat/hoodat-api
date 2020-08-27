@@ -25,8 +25,8 @@ export function errorHandler(
   if (err instanceof Error) {
     console.warn(`Caught Internal Server Error for ${req.path}`);
     return res.status(500).json({
-      message: 'Internal Server Error',
-      err
+      error: 'Internal Server Error',
+      message: err.message
     });
   }
 

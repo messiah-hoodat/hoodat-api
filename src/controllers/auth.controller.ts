@@ -2,6 +2,7 @@ import { Controller, Post, Get, Route, Tags, Query, Response, Body, Path, Reques
 import * as jwt from 'jsonwebtoken';
 import * as Boom from '@hapi/boom';
 import * as express from 'express';
+import { hashSync } from 'bcrypt';
 
 import User from '../models/User';
 
@@ -44,8 +45,11 @@ export class AuthController extends Controller {
       throw Boom.conflict(`Username '${requestBody.username}' already exists`);
     }
 
-    const user = new User({...requestBody });
+    // Hash the password
+    requestBody.password = hashSync(requestBody.password, 10);
 
+    // Create a new user
+    const user = new User({...requestBody });
     try {
       await user.save();
     } catch (err) {
