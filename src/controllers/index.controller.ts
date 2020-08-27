@@ -5,11 +5,6 @@ import { Controller, Get, Route, Tags } from 'tsoa';
 export class IndexController extends Controller {
   @Get('')
   public async index() {
-      return { msg: 'Hello, world! :-)' };
-  }
-
-  @Get('/msg')
-  public msg() {
-      return { msg: 'This is a message' };
+      return { msg: 'The service is up and running!' };
   }
 }

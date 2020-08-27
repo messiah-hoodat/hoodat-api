@@ -2,13 +2,13 @@
   "name": "hoodat-api",
   "version": "0.0.0",
   "description": "Backend API service for Hoodat mobile app",
-  "main": "src/main.js",
+  "main": "src/index.js",
   "scripts": {
     "build:routes": "mkdir -p src/routes && npx tsoa routes",
     "build:swagger": "mkdir -p api/dist && npx tsoa swagger",
     "build:ts": "npx tsc -p src",
     "build": "npm run build:routes && npm run build:swagger && npm run build:ts",
-    "serve": "node dist/main.js",
+    "serve": "node dist/index.js",
     "start": "npm run build && npm run serve"
   },
   "author": "Eric Weischedel",

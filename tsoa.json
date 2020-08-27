@@ -1,5 +1,5 @@
 {
-  "entryFile": "src/main.ts",
+  "entryFile": "src/index.ts",
   "controllerPathGlobs": [
     "src/**/*.controller.ts"
   ],
@@ -10,7 +10,7 @@
   },
   "routes": {
     "basePath": "/api",
-    "entryFile": "./src/main.ts",
+    "entryFile": "./src/index.ts",
     "routesDir": "./src/routes",
     "middleware": "express",
     "authenticationModule": "./src/authentication.ts"
