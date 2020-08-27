@@ -1,6 +1,8 @@
 import { Controller, Post, Get, Route, Tags, Query, Body, Path } from 'tsoa';
 import * as jwt from "jsonwebtoken";
 
+import User from '../models/User';
+
 interface LoginInput {
   email: string,
   password: string
@@ -10,11 +12,10 @@ interface LoginOutput {
   authToken: string,
 }
 
-interface RegisterInput {
+interface SignUpInput {
+  name: string,
   email: string,
   password: string,
-  firstName: string,
-  lastName: string
 }
 
 @Route('/auth')
@@ -27,11 +28,20 @@ export class AuthController extends Controller {
     return token;
   }
 
-  @Post('/register')
-  public async register(@Body() requestBody: RegisterInput): Promise<LoginOutput> {
-    return {
-      authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+  @Post('/sign-up')
+  public async signUp(@Body() requestBody: SignUpInput): Promise<any> {
+    const userId = '123';
+
+    const user = new User({ userId, ...requestBody });
+
+    try {
+      await user.save();
+    } catch (err) {
+      console.log(err);
+      return err;
     }
+
+    return { code: 200, message: 'Successfully signed up user', userId };
   }
 
 }

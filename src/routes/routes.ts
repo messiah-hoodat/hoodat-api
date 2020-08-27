@@ -23,21 +23,12 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "LoginOutput": {
+    "SignUpInput": {
         "dataType": "refObject",
         "properties": {
-            "authToken": { "dataType": "string", "required": true },
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "RegisterInput": {
-        "dataType": "refObject",
-        "properties": {
+            "name": { "dataType": "string", "required": true },
             "email": { "dataType": "string", "required": true },
             "password": { "dataType": "string", "required": true },
-            "firstName": { "dataType": "string", "required": true },
-            "lastName": { "dataType": "string", "required": true },
         },
         "additionalProperties": true,
     },
@@ -84,10 +75,10 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    app.post('/api/auth/register',
+    app.post('/api/auth/sign-up',
         function(request: any, response: any, next: any) {
             const args = {
-                requestBody: { "in": "body", "name": "requestBody", "required": true, "ref": "RegisterInput" },
+                requestBody: { "in": "body", "name": "requestBody", "required": true, "ref": "SignUpInput" },
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -102,7 +93,7 @@ export function RegisterRoutes(app: express.Express) {
             const controller = new AuthController();
 
 
-            const promise = controller.register.apply(controller, validatedArgs as any);
+            const promise = controller.signUp.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
