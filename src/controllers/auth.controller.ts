@@ -14,7 +14,7 @@ import { hashSync, compareSync } from 'bcrypt';
 import { User, UserDocument } from '../models/User';
 import { signUpInputSchema } from '../schemas/signUpInputSchema';
 
-interface LoginInput {
+interface RequestTokenInput {
   username: string,
   password: string
 }
@@ -30,10 +30,10 @@ interface SignUpInput {
 export class AuthController extends Controller {
 
   /**
-   * Creates an auth token by username and password
+   * Creates and returns an auth token by username and password
    */
   @Post('/request-token')
-  public async login(@Body() requestBody: LoginInput): Promise<any> {
+  public async requestToken(@Body() requestBody: RequestTokenInput): Promise<any> {
     // Make sure username exists
     let user: UserDocument;
     try {
