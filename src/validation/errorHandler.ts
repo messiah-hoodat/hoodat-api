@@ -8,7 +8,6 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): Response | void {
-  console.log('error detected');
   if (err instanceof ValidateError) {
     console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
     return res.status(400).json({
