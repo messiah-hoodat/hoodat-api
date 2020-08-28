@@ -9,9 +9,9 @@ import {
   Body,
   Request,
 } from 'tsoa';
-import { hashSync } from 'bcrypt';
+import { hashSync, compareSync } from 'bcrypt';
 
-import User from '../models/User';
+import { User, UserDocument } from '../models/User';
 import { signUpInputSchema } from '../schemas/signUpInputSchema';
 
 interface LoginInput {
@@ -29,12 +29,37 @@ interface SignUpInput {
 @Tags('Auth')
 export class AuthController extends Controller {
 
+  /**
+   * Creates an auth token by username and password
+   */
   @Post('/request-token')
   public async login(@Body() requestBody: LoginInput): Promise<any> {
-    var token = jwt.sign({ userId: '5843543' }, process.env.TOKEN_SECRET);
-    return token;
+    // Make sure username exists
+    let user: UserDocument;
+    try {
+      user = await User.findOne({ username: requestBody.username });
+    } catch (err) {
+      console.error(err);
+      return err;
+    }
+    if (!user) {
+      throw Boom.notFound(`Username '${requestBody.username}' is not registered to any existing user`)
+    }
+
+    // Verify password
+    const isCorrect = compareSync(requestBody.password, user.password);
+    if (!isCorrect) {
+      throw Boom.unauthorized(`Incorrect password for '${requestBody.username}'`)
+    }
+
+    // Create and return token
+    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
+    return { code: 200, message: 'Successfully logged in', token };
   }
 
+  /**
+   * Signs up a new user
+   */
   @Post('/sign-up')
   public async signUp(
     @Body() requestBody: SignUpInput,
@@ -52,7 +77,7 @@ export class AuthController extends Controller {
     try {
       existingUser = await User.findOne({ username: requestBody.username });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return err;
     }
     if (existingUser) {

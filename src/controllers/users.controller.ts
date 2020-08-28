@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Route, Tags, Query, Body, Path, Security } from 'tsoa';
 
-import User from '../models/User';
+import { User } from '../models/User';
 
 interface UserOutput {
   email: string,
@@ -13,7 +13,7 @@ interface UserOutput {
 export class UserController {
 
   /**
-   * Get all users
+   * Gets all users
    */
   @Get('')
   public async getUsers(): Promise<Array<any>> {
@@ -27,7 +27,7 @@ export class UserController {
   }
 
   /**
-   * Get a specific user by user id
+   * Gets a specific user by user id
    */
   @Security('jwt')
   @Get('{userId}')
