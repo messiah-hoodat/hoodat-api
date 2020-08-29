@@ -14,7 +14,7 @@ import { hashSync, compareSync } from 'bcrypt';
 import { User, UserDocument } from '../models/User';
 import { signUpInputSchema } from '../schemas/signUpInputSchema';
 
-interface RequestTokenInput {
+interface TokenInput {
   email: string,
   password: string
 }
@@ -32,9 +32,9 @@ export class AuthController extends Controller {
   /**
    * Creates and returns an auth token by email and password
    */
-  @Post('/request-token')
-  public async requestToken(@Body() requestBody: RequestTokenInput): Promise<any> {
-    // Make sure email exists
+  @Post('/token')
+  public async token(@Body() requestBody: TokenInput): Promise<any> {
+    // Make sure email is registered
     let user: UserDocument;
     try {
       user = await User.findOne({ email: requestBody.email });
