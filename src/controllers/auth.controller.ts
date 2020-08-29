@@ -54,7 +54,7 @@ export class AuthController extends Controller {
 
     // Create and return token
     const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
-    return { code: 200, message: 'Successfully logged in', userId: user._id, token };
+    return { statusCode: 200, message: 'Successfully logged in', userId: user._id, token };
   }
 
   /**
@@ -95,7 +95,7 @@ export class AuthController extends Controller {
       return err;
     }
 
-    return { code: 200, message: 'Successfully signed up user', userId: user._id };
+    return { statusCode: 200, message: 'Successfully signed up user', userId: user._id };
   }
 
 }

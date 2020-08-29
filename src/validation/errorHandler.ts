@@ -11,6 +11,8 @@ export function errorHandler(
   if (err instanceof ValidateError) {
     console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
     return res.status(400).json({
+      statusCode: 400,
+      error: 'Bad Request',
       message: 'Validation Failed',
       details: err?.fields,
     });
@@ -18,12 +20,13 @@ export function errorHandler(
 
   if (Boom.isBoom(err)) {
     console.warn(`Caught Boom Error for ${req.path}:`, err.output.payload);
-    return res.status(err.output.statusCode).json(err);
+    return res.status(err.output.statusCode).json(err.output.payload);
   }
 
   if (err instanceof Error) {
     console.warn(`Caught Internal Server Error for ${req.path}`);
     return res.status(500).json({
+      statusCode: 500,
       error: 'Internal Server Error',
       message: err.message
     });
