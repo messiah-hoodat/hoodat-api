@@ -15,13 +15,13 @@ import { User, UserDocument } from '../models/User';
 import { signUpInputSchema } from '../schemas/signUpInputSchema';
 
 interface RequestTokenInput {
-  username: string,
+  email: string,
   password: string
 }
 
 interface SignUpInput {
   name: string,
-  username: string,
+  email: string,
   password: string,
 }
 
@@ -30,31 +30,31 @@ interface SignUpInput {
 export class AuthController extends Controller {
 
   /**
-   * Creates and returns an auth token by username and password
+   * Creates and returns an auth token by email and password
    */
   @Post('/request-token')
   public async requestToken(@Body() requestBody: RequestTokenInput): Promise<any> {
-    // Make sure username exists
+    // Make sure email exists
     let user: UserDocument;
     try {
-      user = await User.findOne({ username: requestBody.username });
+      user = await User.findOne({ email: requestBody.email });
     } catch (err) {
       console.error(err);
       return err;
     }
     if (!user) {
-      throw Boom.notFound(`Username '${requestBody.username}' is not registered to any existing user`)
+      throw Boom.notFound(`Email '${requestBody.email}' is not registered to any existing user`)
     }
 
     // Verify password
     const isCorrect = compareSync(requestBody.password, user.password);
     if (!isCorrect) {
-      throw Boom.unauthorized(`Incorrect password for '${requestBody.username}'`)
+      throw Boom.unauthorized(`Incorrect password for '${requestBody.email}'`)
     }
 
     // Create and return token
     const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
-    return { code: 200, message: 'Successfully logged in', token };
+    return { code: 200, message: 'Successfully logged in', userId: user._id, token };
   }
 
   /**
@@ -63,7 +63,6 @@ export class AuthController extends Controller {
   @Post('/sign-up')
   public async signUp(
     @Body() requestBody: SignUpInput,
-    @Request() req: express.Request
   ): Promise<any> {
     // Validate input
     try {
@@ -72,16 +71,16 @@ export class AuthController extends Controller {
       throw Boom.badRequest('Validation failed', err)
     }
 
-    // Check if username already exists
+    // Check if email is already registered
     let existingUser;
     try {
-      existingUser = await User.findOne({ username: requestBody.username });
+      existingUser = await User.findOne({ email: requestBody.email });
     } catch (err) {
       console.error(err);
       return err;
     }
     if (existingUser) {
-      throw Boom.conflict(`Username '${requestBody.username}' already exists`);
+      throw Boom.conflict(`Email '${requestBody.email}' is already registered`);
     }
 
     // Hash the password
@@ -96,7 +95,7 @@ export class AuthController extends Controller {
       return err;
     }
 
-    return { code: 200, message: 'Successfully signed up user', user };
+    return { code: 200, message: 'Successfully signed up user', userId: user._id };
   }
 
 }

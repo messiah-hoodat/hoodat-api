@@ -6,8 +6,8 @@ export const signUpInputSchema = Joi.object({
     .min(3)
     .max(50)
     .required(),
-  username: Joi.string()
-    .alphanum()
+  email: Joi.string()
+    .email()
     .min(3)
     .max(50)
     .required(),
