@@ -8,6 +8,7 @@ import {
   Tags,
   Body,
   Request,
+  Response
 } from 'tsoa';
 import { hashSync, compareSync } from 'bcrypt';
 
@@ -19,10 +20,23 @@ interface TokenInput {
   password: string
 }
 
+interface TokenOutput {
+  statusCode: number,
+  message: string,
+  userId: string,
+  token: string
+}
+
 interface SignUpInput {
   name: string,
   email: string,
   password: string,
+}
+
+interface SignUpOutput {
+  statusCode: number,
+  message: string,
+  userId: string
 }
 
 @Route('/auth')
@@ -32,8 +46,10 @@ export class AuthController extends Controller {
   /**
    * Creates and returns an auth token by email and password
    */
+  @Response(401, 'Incorrect password')
+  @Response(404, 'Email not found')
   @Post('/token')
-  public async token(@Body() requestBody: TokenInput): Promise<any> {
+  public async token(@Body() requestBody: TokenInput): Promise<TokenOutput> {
     // Make sure email is registered
     let user: UserDocument;
     try {
@@ -60,10 +76,12 @@ export class AuthController extends Controller {
   /**
    * Signs up a new user
    */
+  @Response(400, 'Validation failed')
+  @Response(409, 'Email already registered')
   @Post('/sign-up')
   public async signUp(
     @Body() requestBody: SignUpInput,
-  ): Promise<any> {
+  ): Promise<SignUpOutput> {
     // Validate input
     try {
       await signUpInputSchema.validateAsync(requestBody);

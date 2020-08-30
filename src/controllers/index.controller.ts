@@ -1,7 +1,8 @@
-import { Controller, Get, Route, Tags } from 'tsoa';
+import { Controller, Get, Route, Tags, Hidden } from 'tsoa';
 
 @Route('')
 @Tags('Status')
+@Hidden()
 export class IndexController extends Controller {
 
   /**
