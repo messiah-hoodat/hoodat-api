@@ -26,7 +26,8 @@ export function expressAuthentication(
 
       jwt.verify(token, process.env.TOKEN_SECRET, function (err: any, decoded: any) {
         if (err) {
-          reject(Boom.forbidden('Token verification error', err));
+          console.warn('Caught token verification error: ', err);
+          reject(Boom.forbidden('Token verification error'));
         } else {
           for (let scope of scopes) {
             if (!decoded.scopes.includes(scope)) {

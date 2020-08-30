@@ -2,11 +2,12 @@ import * as jwt from 'jsonwebtoken';
 import * as Boom from '@hapi/boom';
 import { Controller, Post, Get, Route, Tags, Query, Body, Path, Security, Header } from 'tsoa';
 
-import { User } from '../models/User';
+import { User, UserDocument } from '../models/User';
 
 interface UserOutput {
-  username: string,
+  userId: string,
   name: string,
+  email: string,
 }
 
 @Route('/users')
@@ -18,12 +19,22 @@ export class UserController {
    */
   @Security('jwt')
   @Get('{userId}')
-  public async getUser(@Path() userId: string, @Header('x-access-token') token: string): Promise<any> {
+  public async getUser(@Path() userId: string, @Header('Authorization') authHeader: string): Promise<UserOutput> {
+    const token = authHeader.split('Bearer ')[1];
     const decoded = jwt.decode(token, { json: true });
+
     const tokenId = decoded.userId;
     if (tokenId !== userId) {
       throw Boom.badRequest('User ID in path does not match user ID in token')
     }
-    return decoded;
+
+    let user: UserDocument;
+    try {
+      user = await User.findById(tokenId);
+    } catch (err) {
+      console.error(err);
+      return err;
+    }
+    return { userId: tokenId, name: user.name, email: user.email };
   }
 }
