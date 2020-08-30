@@ -18,5 +18,5 @@ npm install
 npm run start
 ```
 
-# API Reference
+## API Reference
 The API is self-documenting using [tsoa](https://tsoa-community.github.io/docs/) and [Swagger](https://swagger.io/). The documentation can be viewed [here](https://hoodat-api.herokuapp.com/docs).
