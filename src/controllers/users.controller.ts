@@ -14,21 +14,7 @@ interface UserOutput {
 export class UserController {
 
   /**
-   * Gets all users
-   */
-  @Get('')
-  public async getUsers(): Promise<Array<any>> {
-    try {
-      const users = await User.find();
-      return users;
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
-  }
-
-  /**
-   * Gets a specific user by user ID
+   * Gets a specific user by user id
    */
   @Security('jwt')
   @Get('{userId}')
