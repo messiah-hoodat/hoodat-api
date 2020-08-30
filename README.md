@@ -1,7 +1,7 @@
 # hoodat-api
 Backend API service for Hoodat mobile app
 
-## Running the service locally
+## Running Locally
 1. Install [NodeJS](https://nodejs.org/en/)
 2. Clone the repo
 ```
@@ -17,3 +17,6 @@ npm install
 ```
 npm run start
 ```
+
+# API Reference
+The API is self-documenting using [tsoa](https://tsoa-community.github.io/docs/) and [Swagger](https://swagger.io/). The documentation can be viewed [here](https://hoodat-api.herokuapp.com/docs).
