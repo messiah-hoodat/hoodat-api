@@ -7,21 +7,27 @@ export function expressAuthentication(
   securityName: string,
   scopes?: string[]
 ): Promise<any> {
-if (securityName === 'jwt') {
-    const token =
-      request.body.token ||
-      request.query.token ||
-      request.headers['x-access-token'];
-
+  if (securityName === 'jwt') {
     return new Promise((resolve, reject) => {
+      const authHeader = request.headers.authorization;
+      if (!authHeader) {
+        reject(Boom.forbidden('No Authorization header provided'));
+      }
+
+      const isBearer = /^Bearer .*/.test(authHeader);
+      if (!isBearer) {
+        reject(Boom.forbidden(`Authorization header must follow pattern: 'Bearer <token>'`))
+      }
+
+      const token = authHeader.split('Bearer ')[1];
       if (!token) {
         reject(Boom.forbidden('No token provided'));
       }
+
       jwt.verify(token, process.env.TOKEN_SECRET, function (err: any, decoded: any) {
         if (err) {
           reject(Boom.forbidden('Token verification error', err));
         } else {
-          // Check if JWT contains all required scopes
           for (let scope of scopes) {
             if (!decoded.scopes.includes(scope)) {
               reject(Boom.forbidden('Token does not contain required scope', scope));
