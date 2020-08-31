@@ -18,5 +18,22 @@ npm install
 npm run start
 ```
 
+## Running with Docker
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+2. Clone the repo
+```
+git clone https://github.com/messiah-hoodat/hoodat-api.git
+```
+3. Add required environment variables to `.env` (ask Eric for the variables)
+4. Build the image
+```
+cd hoodat-api
+docker build -t hoodat-api .
+```
+5. Run the image as a container
+```
+docker run --rm -it -p 8000:8000/tcp hoodat-api:latest
+```
+
 ## API Reference
 The API is self-documenting using [tsoa](https://tsoa-community.github.io/docs/) and [Swagger](https://swagger.io/). The documentation can be viewed [here](https://hoodat-api.herokuapp.com/docs).
