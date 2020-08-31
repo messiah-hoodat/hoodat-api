@@ -1,5 +1,5 @@
 # hoodat-api
-Backend API service for Hoodat mobile app
+Backend API service for [Hoodat mobile app](https://github.com/messiah-hoodat/hoodat-ui).
 
 ## Running Locally
 1. Install [NodeJS](https://nodejs.org/en/)
