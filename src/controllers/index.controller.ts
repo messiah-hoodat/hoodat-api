@@ -10,6 +10,6 @@ export class IndexController extends Controller {
   */
   @Get('')
   public async index() {
-      return { msg: 'The service is up and running!' };
+      return { msg: 'The service is up and running! :-)' };
   }
 }
