@@ -3,7 +3,8 @@ import Boom from '@hapi/boom';
 import { Post, Get, Route, Tags, Path, Security, Header, Response, Body } from 'tsoa';
 
 import { User, UserDocument } from '../models/User';
-import { Contact } from '../models/Contact';
+import { Contact, ContactDocument } from '../models/Contact';
+import getDecodedToken from 'lib/getDecodedToken';
 
 interface UserOutput {
   userId: string,
@@ -22,7 +23,6 @@ const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png'];
 @Route('/users')
 @Tags('Users')
 export class UserController {
-
   /**
    * Gets a specific user by user id
    */
@@ -33,22 +33,20 @@ export class UserController {
     @Path() userId: string,
     @Header('Authorization') authHeader: string
   ): Promise<UserOutput> {
-    const token = authHeader.split('Bearer ')[1];
-    const decoded = jwt.decode(token, { json: true });
+    const token = getDecodedToken(authHeader);
 
-    const tokenId = decoded.userId;
-    if (tokenId !== userId) {
+    if (token.userId !== userId) {
       throw Boom.forbidden('User ID in path does not match user ID in token');
     }
 
     let user: UserDocument;
     try {
-      user = await User.findById(tokenId);
+      user = await User.findById(userId);
     } catch (err) {
       console.error(err);
       return err;
     }
-    return { userId: tokenId, name: user.name, email: user.email };
+    return { userId: userId, name: user.name, email: user.email };
   }
 
   /**
@@ -61,12 +59,10 @@ export class UserController {
     @Path() userId: string,
     @Header('Authorization') authHeader: string,
     @Body() input: AddContactInput
-  ): Promise<any> {
-    const token = authHeader.split('Bearer ')[1];
-    const decoded = jwt.decode(token, { json: true });
+  ): Promise<ContactDocument> {
+    const token = getDecodedToken(authHeader);
 
-    const tokenId = decoded.userId;
-    if (tokenId !== userId) {
+    if (token.userId !== userId) {
       throw Boom.forbidden('User ID in path does not match user ID in token');
     }
 
@@ -88,5 +84,26 @@ export class UserController {
     }
 
     return contact;
+  }
+
+  /**
+   * Gets all contacts that are owned by the user
+   */
+  @Security('jwt')
+  @Response(403)
+  @Get('{userId}/contacts')
+  public async getContacts(
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ContactDocument[]> {
+    const token = getDecodedToken(authHeader);
+
+    if (token.userId !== userId) {
+      throw Boom.forbidden('User ID in path does not match user ID in token');
+    }
+
+    const contacts = await Contact.find({ owner: userId });
+
+    return contacts;
   }
 }
