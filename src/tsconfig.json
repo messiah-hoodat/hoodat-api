@@ -3,6 +3,7 @@
     "experimentalDecorators": true,
     "outDir": "../dist",
     "baseUrl": "",
-    "module": "commonjs"
+    "module": "commonjs",
+    "esModuleInterop": true
   },
 }
