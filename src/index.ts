@@ -1,7 +1,7 @@
-import * as express from 'express';
-import * as dotenv from 'dotenv';
-import * as mongoose from 'mongoose';
-import * as swaggerUi from 'swagger-ui-express';
+import express from 'express';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import swaggerUi from 'swagger-ui-express';
 
 import { RegisterRoutes } from './routes/routes';
 import { errorHandler } from './validation/errorHandler';
@@ -11,7 +11,7 @@ dotenv.config();
 const { DB_CONNECTION_STRING, PORT } = process.env;
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 mongoose.connect(
   DB_CONNECTION_STRING,
