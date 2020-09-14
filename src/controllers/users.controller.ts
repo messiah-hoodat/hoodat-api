@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import Boom from '@hapi/boom';
-import { Post, Get, Route, Tags, Path, Security, Header, Response, Request, Body } from 'tsoa';
+import { Post, Get, Route, Tags, Path, Security, Header, Response, Body } from 'tsoa';
 
 import { User, UserDocument } from '../models/User';
-import { Contact, ContactDocument } from '../models/Contact';
+import { Contact } from '../models/Contact';
 
 interface UserOutput {
   userId: string,
@@ -17,9 +17,12 @@ interface AddContactInput {
   data: string
 }
 
+const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png'];
+
 @Route('/users')
 @Tags('Users')
 export class UserController {
+
   /**
    * Gets a specific user by user id
    */
@@ -51,6 +54,8 @@ export class UserController {
   /**
    * Creates a contact that is owned by the user
    */
+  @Security('jwt')
+  @Response(403)
   @Post('{userId}/contacts')
   public async addContact(
     @Path() userId: string,
@@ -63,6 +68,10 @@ export class UserController {
     const tokenId = decoded.userId;
     if (tokenId !== userId) {
       throw Boom.forbidden('User ID in path does not match user ID in token');
+    }
+
+    if (!ALLOWED_MIMETYPES.includes(input.fileType)) {
+      throw Boom.badRequest(`File type ${input.fileType} is not allowed`);
     }
 
     const contact = new Contact({
