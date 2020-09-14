@@ -1,10 +1,9 @@
-import jwt from 'jsonwebtoken';
 import Boom from '@hapi/boom';
 import { Post, Get, Route, Tags, Path, Security, Header, Response, Body } from 'tsoa';
 
 import { User, UserDocument } from '../models/User';
 import { Contact, ContactDocument } from '../models/Contact';
-import getDecodedToken from 'lib/getDecodedToken';
+import getDecodedToken from '../lib/getDecodedToken';
 
 interface UserOutput {
   userId: string,
@@ -59,7 +58,7 @@ export class UserController {
     @Path() userId: string,
     @Header('Authorization') authHeader: string,
     @Body() input: AddContactInput
-  ): Promise<ContactDocument> {
+  ): Promise<any> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {
@@ -95,7 +94,7 @@ export class UserController {
   public async getContacts(
     @Path() userId: string,
     @Header('Authorization') authHeader: string
-  ): Promise<ContactDocument[]> {
+  ): Promise<any> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {

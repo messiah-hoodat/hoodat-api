@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 export interface ContactDocument extends mongoose.Document {
+  owner: string;
   name: string;
   fileType: string;
   data: string;
-  owner?: string;
 }
 
 export const ContactSchema = new mongoose.Schema({
@@ -26,4 +26,4 @@ export const ContactSchema = new mongoose.Schema({
   }
 });
 
-export const Contact = mongoose.model<ContactDocument>('contacts', ContactSchema);
+export const Contact = mongoose.model('contacts', ContactSchema);
