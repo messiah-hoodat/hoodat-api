@@ -49,7 +49,7 @@ export class ListsController {
     // Remove duplicate contacts
     const contacts = uniq(input.contacts);
 
-    // Check if contact ids exist
+    // Validate contact IDs
     for (let i = 0; i < contacts.length; i++) {
       if (!mongoose.Types.ObjectId.isValid(contacts[i])) {
         throw Boom.notFound(`Invalid Contact ID: ${contacts[i]}`);
