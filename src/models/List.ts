@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export interface ListDocument extends mongoose.Document {
   name: string;
   owner: string;
-  contacts: string[] | undefined;
+  contacts?: string[];
 }
 
 export const ListSchema = new mongoose.Schema({
