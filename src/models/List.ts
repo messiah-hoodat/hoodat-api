@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export interface ListDocument extends mongoose.Document {
   name: string;
   owner: string;
-  contacts: string[];
+  contacts: string[] | undefined;
 }
 
 export const ListSchema = new mongoose.Schema({
@@ -21,4 +21,4 @@ export const ListSchema = new mongoose.Schema({
   }
 });
 
-export const List = mongoose.model('lists', ListSchema);
+export const List = mongoose.model<ListDocument>('lists', ListSchema);
