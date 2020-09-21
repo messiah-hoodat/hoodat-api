@@ -9,16 +9,16 @@ export interface UserDocument extends mongoose.Document {
 export const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 export const User = mongoose.model<UserDocument>('users', UserSchema);

@@ -1,20 +1,30 @@
 import Boom from '@hapi/boom';
-import { Post, Get, Route, Tags, Path, Security, Header, Response, Body } from 'tsoa';
+import {
+  Post,
+  Get,
+  Route,
+  Tags,
+  Path,
+  Security,
+  Header,
+  Response,
+  Body,
+} from 'tsoa';
 
 import { User, UserDocument } from '../models/User';
 import { Contact, ContactDocument } from '../models/Contact';
 import getDecodedToken from '../lib/getDecodedToken';
 
 interface UserOutput {
-  userId: string,
-  name: string,
-  email: string,
+  userId: string;
+  name: string;
+  email: string;
 }
 
 interface AddContactInput {
-  name: string,
-  fileType: string,
-  data: string
+  name: string;
+  fileType: string;
+  data: string;
 }
 
 const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png'];

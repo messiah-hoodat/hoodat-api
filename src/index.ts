@@ -33,4 +33,6 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(errorHandler);
 
 const port = PORT || 8000;
-app.listen(port, () => console.log(`Server started listening to port ${port}.`));
+app.listen(port, () =>
+  console.log(`Server started listening to port ${port}.`)
+);
