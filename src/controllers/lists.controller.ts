@@ -30,6 +30,8 @@ export class ListsController {
   /**
    * Creates a list that is owned by the user
    */
+  @Security('jwt')
+  @Response(403)
   @Post('')
   public async addList(
     @Header('Authorization') authHeader: string,

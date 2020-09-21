@@ -1,7 +1,11 @@
 import jwt from 'jsonwebtoken';
 
-export default function getDecodedToken(authHeader: string) {
+interface Token {
+  userId: string;
+}
+
+export default function getDecodedToken(authHeader: string): Token  {
   const token = authHeader.split('Bearer ')[1];
   const decoded = jwt.decode(token, { json: true });
-  return decoded;
+  return decoded as Token;
 }
