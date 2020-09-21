@@ -14,7 +14,7 @@ import {
 } from 'tsoa';
 
 import { List, ListDocument } from '../models/List';
-import { Contact } from '../models/Contact';
+import { Contact, ContactDocument } from '../models/Contact';
 import addListInputSchema from '../schemas/addListInputSchema';
 import getDecodedToken from '../lib/getDecodedToken';
 
@@ -37,6 +37,8 @@ export class ListsController {
     @Header('Authorization') authHeader: string,
     @Body() input: AddListInput
   ): Promise<any> {
+    const token = getDecodedToken(authHeader);
+
     // Validate input
     try {
       await addListInputSchema.validateAsync(input);
@@ -49,15 +51,19 @@ export class ListsController {
 
     // Check if contact ids exist
     for (let i = 0; i < contacts.length; i++) {
-      if (
-        !mongoose.Types.ObjectId.isValid(contacts[i]) ||
-        !(await Contact.exists({ _id: contacts[i] }))
-      ) {
+      if (!mongoose.Types.ObjectId.isValid(contacts[i])) {
+        throw Boom.notFound(`Invalid Contact ID: ${contacts[i]}`);
+      }
+      const contact = await Contact.findById(contacts[i]);
+      if (!contact) {
         throw Boom.notFound(`Contact not found: ${contacts[i]}`);
       }
+      if (contact.owner !== token.userId) {
+        throw Boom.forbidden(
+          `You do not have permission to add this contact: ${contacts[i]}`
+        );
+      }
     }
-
-    const token = getDecodedToken(authHeader);
 
     const list = new List({
       name: input.name,

@@ -31,6 +31,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.161",
     "@types/node": "^14.0.13",
+    "prettier": "2.1.2",
     "tsoa": "^3.2.1",
     "typescript": "^3.9.5"
   }
