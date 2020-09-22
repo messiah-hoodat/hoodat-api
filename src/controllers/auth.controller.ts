@@ -1,48 +1,39 @@
 import * as Boom from '@hapi/boom';
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
-import {
-  Controller,
-  Post,
-  Route,
-  Tags,
-  Body,
-  Request,
-  Response
-} from 'tsoa';
+import { Controller, Post, Route, Tags, Body, Request, Response } from 'tsoa';
 import { hashSync, compareSync } from 'bcrypt';
 
 import { User, UserDocument } from '../models/User';
 import { signUpInputSchema } from '../schemas/signUpInputSchema';
 
 interface TokenInput {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
 
 interface TokenOutput {
-  statusCode: number,
-  message: string,
-  userId: string,
-  token: string
+  statusCode: number;
+  message: string;
+  userId: string;
+  token: string;
 }
 
 interface SignUpInput {
-  name: string,
-  email: string,
-  password: string,
+  name: string;
+  email: string;
+  password: string;
 }
 
 interface SignUpOutput {
-  statusCode: number,
-  message: string,
-  userId: string
+  statusCode: number;
+  message: string;
+  userId: string;
 }
 
 @Route('/auth')
 @Tags('Auth')
 export class AuthController extends Controller {
-
   /**
    * Creates and returns an auth token by email and password
    */
@@ -59,18 +50,25 @@ export class AuthController extends Controller {
       return err;
     }
     if (!user) {
-      throw Boom.notFound(`Email '${requestBody.email}' is not registered to any existing user`)
+      throw Boom.notFound(
+        `Email '${requestBody.email}' is not registered to any existing user`
+      );
     }
 
     // Verify password
     const isCorrect = compareSync(requestBody.password, user.password);
     if (!isCorrect) {
-      throw Boom.unauthorized(`Incorrect password for '${requestBody.email}'`)
+      throw Boom.unauthorized(`Incorrect password for '${requestBody.email}'`);
     }
 
     // Create and return token
     const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
-    return { statusCode: 200, message: 'Successfully logged in', userId: user._id, token };
+    return {
+      statusCode: 200,
+      message: 'Successfully logged in',
+      userId: user._id,
+      token,
+    };
   }
 
   /**
@@ -79,14 +77,12 @@ export class AuthController extends Controller {
   @Response(400, 'Validation failed')
   @Response(409, 'Email already registered')
   @Post('/sign-up')
-  public async signUp(
-    @Body() requestBody: SignUpInput,
-  ): Promise<SignUpOutput> {
+  public async signUp(@Body() requestBody: SignUpInput): Promise<SignUpOutput> {
     // Validate input
     try {
       await signUpInputSchema.validateAsync(requestBody);
     } catch (err) {
-      throw Boom.badRequest('Validation failed', err)
+      throw Boom.badRequest('Validation failed', err);
     }
 
     // Check if email is already registered
@@ -113,7 +109,10 @@ export class AuthController extends Controller {
       return err;
     }
 
-    return { statusCode: 200, message: 'Successfully signed up user', userId: user._id };
+    return {
+      statusCode: 200,
+      message: 'Successfully signed up user',
+      userId: user._id,
+    };
   }
-
 }

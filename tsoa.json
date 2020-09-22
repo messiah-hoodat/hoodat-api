@@ -1,8 +1,6 @@
 {
   "entryFile": "src/index.ts",
-  "controllerPathGlobs": [
-    "src/**/*.controller.ts"
-  ],
+  "controllerPathGlobs": ["src/**/*.controller.ts"],
   "spec": {
     "basePath": "/api",
     "outputDirectory": "./api/dist",

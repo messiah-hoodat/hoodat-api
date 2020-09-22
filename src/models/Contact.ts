@@ -10,7 +10,7 @@ export interface ContactDocument extends mongoose.Document {
 export const ContactSchema = new mongoose.Schema({
   owner: {
     type: String,
-    required: false,
+    required: true,
   },
   name: {
     type: String,
@@ -22,8 +22,8 @@ export const ContactSchema = new mongoose.Schema({
   },
   data: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-export const Contact = mongoose.model('contacts', ContactSchema);
+export const Contact = mongoose.model<ContactDocument>('contacts', ContactSchema);

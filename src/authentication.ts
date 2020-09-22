@@ -16,7 +16,11 @@ export function expressAuthentication(
 
       const isBearer = /^Bearer .*/.test(authHeader);
       if (!isBearer) {
-        reject(Boom.forbidden(`Authorization header must follow pattern: 'Bearer <token>'`))
+        reject(
+          Boom.forbidden(
+            `Authorization header must follow pattern: 'Bearer <token>'`
+          )
+        );
       }
 
       const token = authHeader.split('Bearer ')[1];
@@ -24,14 +28,19 @@ export function expressAuthentication(
         reject(Boom.forbidden('No token provided'));
       }
 
-      jwt.verify(token, process.env.TOKEN_SECRET, function (err: any, decoded: any) {
+      jwt.verify(token, process.env.TOKEN_SECRET, function (
+        err: any,
+        decoded: any
+      ) {
         if (err) {
           console.warn('Caught token verification error: ', err);
           reject(Boom.forbidden('Token verification error'));
         } else {
           for (let scope of scopes) {
             if (!decoded.scopes.includes(scope)) {
-              reject(Boom.forbidden('Token does not contain required scope', scope));
+              reject(
+                Boom.forbidden('Token does not contain required scope', scope)
+              );
             }
           }
           resolve(decoded);

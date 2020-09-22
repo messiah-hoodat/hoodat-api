@@ -6,14 +6,6 @@ export const signUpInputSchema = Joi.object({
     .min(3)
     .max(50)
     .required(),
-  email: Joi.string()
-    .email()
-    .min(3)
-    .max(50)
-    .required(),
-  password: Joi
-    .string()
-    .min(8)
-    .max(200)
-    .required()
+  email: Joi.string().email().min(3).max(50).required(),
+  password: Joi.string().min(8).max(200).required(),
 });
