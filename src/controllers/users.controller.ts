@@ -12,8 +12,9 @@ import {
 } from 'tsoa';
 
 import { User, UserDocument } from '../models/User';
-import { Contact, ContactDocument } from '../models/Contact';
+import { Contact } from '../models/Contact';
 import getDecodedToken from '../lib/getDecodedToken';
+import { List } from '../models/List';
 
 interface UserOutput {
   userId: string;
@@ -114,5 +115,26 @@ export class UserController {
     const contacts = await Contact.find({ owner: userId });
 
     return contacts;
+  }
+
+  /**
+   * Gets all lists that are owned by the user
+   */
+  @Security('jwt')
+  @Response(403)
+  @Get('{userId}/lists')
+  public async getLists(
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<any> {
+    const token = getDecodedToken(authHeader);
+
+    if (token.userId !== userId) {
+      throw Boom.forbidden('User ID in path does not match user ID in token');
+    }
+
+    const lists = await List.find({ owner: userId });
+
+    return lists;
   }
 }
