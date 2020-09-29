@@ -4,9 +4,9 @@
   "description": "Backend API service for Hoodat mobile app",
   "main": "src/index.js",
   "scripts": {
-    "build:routes": "mkdir -p src/routes && npx tsoa routes",
-    "build:swagger": "mkdir -p api/dist && npx tsoa swagger",
-    "build:ts": "npx tsc -p src",
+    "build:routes": "mkdirp src/routes && npx tsoa routes",
+    "build:swagger": "mkdirp api/dist && npx tsoa swagger",
+    "build:ts": "tsc -p src",
     "build": "npm run build:routes && npm run build:swagger && npm run build:ts",
     "serve": "node dist/index.js",
     "start": "npm run build && npm run serve"
@@ -31,6 +31,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.161",
     "@types/node": "^14.0.13",
+    "mkdirp": "^1.0.4",
     "prettier": "2.1.2",
     "tsoa": "^3.2.1",
     "typescript": "^3.9.5"
