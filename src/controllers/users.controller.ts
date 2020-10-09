@@ -9,7 +9,9 @@ import {
   Header,
   Response,
   Body,
+  Delete,
 } from 'tsoa';
+import mongoose from 'mongoose';
 
 import { User, UserDocument } from '../models/User';
 import { Contact, ContactDocument } from '../models/Contact';
@@ -93,6 +95,51 @@ export class UserController {
     }
 
     return contact;
+  }
+
+  /**
+   * Deletes a contact by contact ID
+   */
+  @Security('jwt')
+  @Response(403)
+  @Response(404)
+  @Delete('{userId}/contacts/{contactId}')
+  public async deleteContact(
+    @Path() userId: string,
+    @Path() contactId: string,
+    @Header('Authorization') authHeader: string,
+  ): Promise<any> {
+    const token = getDecodedToken(authHeader);
+
+    if (token.userId !== userId) {
+      throw Boom.forbidden('User ID in path does not match user ID in token');
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      throw Boom.badRequest('Invalid contact ID');
+    }
+
+    const contact = await Contact.findById(contactId);
+
+    if (!contact) {
+      throw Boom.notFound('Contact does not exist');
+    }
+
+    if (contact.owner !== userId) {
+      throw Boom.forbidden('You do not have permission to delete this contact');
+    }
+
+    try {
+      await contact.deleteOne();
+    } catch (err) {
+      throw Boom.internal('Error deleting contact: ', err);
+    }
+
+    return {
+      statusCode: 200,
+      message: 'Contact successfully deleted',
+      contactId
+    };
   }
 
   /**
