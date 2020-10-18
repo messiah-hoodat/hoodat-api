@@ -16,6 +16,8 @@ import { List, ListDocument } from '../models/List';
 import addListInputSchema from '../schemas/addListInputSchema';
 import getDecodedToken from '../lib/getDecodedToken';
 import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
+import { AddContactInput, ALLOWED_MIMETYPES } from './users.controller';
+import { Contact } from '../models/Contact';
 
 interface AddListInput {
   name: string;
@@ -49,6 +51,57 @@ export class ListsController {
       owner: mongoose.Types.ObjectId(token.userId),
       color: input.color,
     });
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    return ListTransformer.outgoing(list);
+  }
+
+  /**
+   * Adds a contact to a list
+   */
+  @Security('jwt')
+  @Response(403)
+  @Response(400)
+  @Post('{listId}/contacts')
+  public async addContactToList(
+    @Path() listId: string,
+    @Header('Authorization') authHeader: string,
+    @Body() input: AddContactInput
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    const list = await List.findById(listId);
+
+    if (list.owner !== token.userId) {
+      throw Boom.forbidden('You do not have permission to update this list');
+    }
+
+    if (!ALLOWED_MIMETYPES.includes(input.fileType)) {
+      throw Boom.badRequest(`File type ${input.fileType} is not allowed`);
+    }
+
+    // Create contact
+    const contact = new Contact({
+      owner: token.userId,
+      name: input.name,
+      fileType: input.fileType,
+      data: input.data,
+    });
+
+    try {
+      await contact.save();
+    } catch (err) {
+      throw Boom.internal('Error saving contact: ', err);
+    }
+
+    // Add contact to list
+    const contactId = contact._id;
+    list.contacts.push(contactId);
 
     try {
       await list.save();
