@@ -1,5 +1,4 @@
 import Boom from '@hapi/boom';
-import { uniq } from 'lodash';
 import mongoose from 'mongoose';
 import {
   Post,
@@ -14,14 +13,12 @@ import {
 } from 'tsoa';
 
 import { List, ListDocument } from '../models/List';
-import { Contact, ContactDocument } from '../models/Contact';
 import addListInputSchema from '../schemas/addListInputSchema';
 import getDecodedToken from '../lib/getDecodedToken';
 
 interface AddListInput {
   name: string;
   color?: string;
-  contacts?: string[];
 }
 
 @Route('/lists')
@@ -46,30 +43,10 @@ export class ListsController {
       throw Boom.badRequest('Validation failed', err);
     }
 
-    // Remove duplicate contacts
-    const contacts = uniq(input.contacts);
-
-    // Validate contact IDs
-    for (let i = 0; i < contacts.length; i++) {
-      if (!mongoose.Types.ObjectId.isValid(contacts[i])) {
-        throw Boom.notFound(`Invalid Contact ID: ${contacts[i]}`);
-      }
-      const contact = await Contact.findById(contacts[i]);
-      if (!contact) {
-        throw Boom.notFound(`Contact not found: ${contacts[i]}`);
-      }
-      if (contact.owner !== token.userId) {
-        throw Boom.forbidden(
-          `You do not have permission to add this contact: ${contacts[i]}`
-        );
-      }
-    }
-
     const list = new List({
       name: input.name,
-      owner: token.userId,
+      owner: mongoose.Types.ObjectId(token.userId),
       color: input.color,
-      contacts: contacts,
     });
 
     try {

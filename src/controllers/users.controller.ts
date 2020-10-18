@@ -108,7 +108,7 @@ export class UserController {
   public async deleteContact(
     @Path() userId: string,
     @Path() contactId: string,
-    @Header('Authorization') authHeader: string,
+    @Header('Authorization') authHeader: string
   ): Promise<any> {
     const token = getDecodedToken(authHeader);
 
@@ -139,7 +139,7 @@ export class UserController {
     return {
       statusCode: 200,
       message: 'Contact successfully deleted',
-      contactId
+      contactId,
     };
   }
 
@@ -180,7 +180,7 @@ export class UserController {
       throw Boom.forbidden('User ID in path does not match user ID in token');
     }
 
-    const lists = await List.find({ owner: userId });
+    const lists = await List.find({ owner: userId }).populate('contacts');
 
     return lists;
   }

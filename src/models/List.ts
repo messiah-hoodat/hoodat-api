@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import { ContactDocument } from './Contact';
+import { UserDocument } from './User';
 
 export interface ListDocument extends mongoose.Document {
   name: string;
-  owner: string;
+  owner: UserDocument['_id'];
   color?: string;
-  contacts?: string[];
+  contacts?: ContactDocument['_id'][];
 }
 
 export const ListSchema = new mongoose.Schema({
@@ -13,17 +15,21 @@ export const ListSchema = new mongoose.Schema({
     required: true,
   },
   owner: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   color: {
     type: String,
     required: false,
   },
-  contacts: {
-    type: [String],
-    required: false,
-  },
+  contacts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Contact',
+      required: false,
+    },
+  ],
 });
 
-export const List = mongoose.model<ListDocument>('lists', ListSchema);
+export const List = mongoose.model<ListDocument>('List', ListSchema, 'lists');
