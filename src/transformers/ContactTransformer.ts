@@ -4,8 +4,10 @@ export interface ContactOutput {
   id: string;
   name: string;
   owner: string;
-  fileType: string;
-  data: string;
+  image: {
+    fileType: string;
+    data: string;
+  };
 }
 
 export class ContactTransformer {
@@ -14,8 +16,10 @@ export class ContactTransformer {
       id: contact._id,
       name: contact.name,
       owner: contact.owner,
-      fileType: contact.fileType,
-      data: contact.data,
+      image: {
+        fileType: contact.fileType,
+        data: contact.data,
+      },
     };
   }
 }
