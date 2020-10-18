@@ -17,6 +17,15 @@ import { User, UserDocument } from '../models/User';
 import { Contact } from '../models/Contact';
 import getDecodedToken from '../lib/getDecodedToken';
 import { List } from '../models/List';
+import {
+  ContactTransformer,
+  ContactOutput,
+} from '../transformers/ContactTransformer';
+import {
+  ListOutput,
+  ListTransformer,
+  PopulatedListDocument,
+} from '../transformers/ListTransformer';
 
 interface UserOutput {
   userId: string;
@@ -71,7 +80,7 @@ export class UserController {
     @Path() userId: string,
     @Header('Authorization') authHeader: string,
     @Body() input: AddContactInput
-  ): Promise<any> {
+  ): Promise<ContactOutput> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {
@@ -95,7 +104,7 @@ export class UserController {
       throw Boom.internal('Error saving contact: ', err);
     }
 
-    return contact;
+    return ContactTransformer.outgoing(contact);
   }
 
   /**
@@ -152,7 +161,7 @@ export class UserController {
   public async getContacts(
     @Path() userId: string,
     @Header('Authorization') authHeader: string
-  ): Promise<any> {
+  ): Promise<ContactOutput[]> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {
@@ -161,7 +170,7 @@ export class UserController {
 
     const contacts = await Contact.find({ owner: userId });
 
-    return contacts;
+    return contacts.map(ContactTransformer.outgoing);
   }
 
   /**
@@ -173,15 +182,17 @@ export class UserController {
   public async getLists(
     @Path() userId: string,
     @Header('Authorization') authHeader: string
-  ): Promise<any> {
+  ): Promise<ListOutput[]> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {
       throw Boom.forbidden('User ID in path does not match user ID in token');
     }
 
-    const lists = await List.find({ owner: userId }).populate('contacts');
+    const lists: PopulatedListDocument[] = await List.find({
+      owner: userId,
+    }).populate('contacts');
 
-    return lists;
+    return lists.map(ListTransformer.outgoing);
   }
 }

@@ -15,6 +15,7 @@ import {
 import { List, ListDocument } from '../models/List';
 import addListInputSchema from '../schemas/addListInputSchema';
 import getDecodedToken from '../lib/getDecodedToken';
+import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
 
 interface AddListInput {
   name: string;
@@ -33,7 +34,7 @@ export class ListsController {
   public async addList(
     @Header('Authorization') authHeader: string,
     @Body() input: AddListInput
-  ): Promise<any> {
+  ): Promise<ListOutput> {
     const token = getDecodedToken(authHeader);
 
     // Validate input
@@ -55,6 +56,6 @@ export class ListsController {
       throw Boom.internal('Error saving list: ', err);
     }
 
-    return list;
+    return ListTransformer.outgoing(list);
   }
 }
