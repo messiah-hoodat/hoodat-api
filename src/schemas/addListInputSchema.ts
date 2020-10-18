@@ -7,7 +7,6 @@ export const addListInputSchema = Joi.object({
   color: Joi.string()
     .valid(...LIST_COLORS)
     .optional(),
-  contacts: Joi.array().items(Joi.string()).optional(),
 });
 
 export default addListInputSchema;

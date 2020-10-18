@@ -14,8 +14,18 @@ import {
 import mongoose from 'mongoose';
 
 import { User, UserDocument } from '../models/User';
-import { Contact, ContactDocument } from '../models/Contact';
+import { Contact } from '../models/Contact';
 import getDecodedToken from '../lib/getDecodedToken';
+import { List } from '../models/List';
+import {
+  ContactTransformer,
+  ContactOutput,
+} from '../transformers/ContactTransformer';
+import {
+  ListOutput,
+  ListTransformer,
+  PopulatedListDocument,
+} from '../transformers/ListTransformer';
 
 interface UserOutput {
   userId: string;
@@ -70,7 +80,7 @@ export class UserController {
     @Path() userId: string,
     @Header('Authorization') authHeader: string,
     @Body() input: AddContactInput
-  ): Promise<any> {
+  ): Promise<ContactOutput> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {
@@ -94,7 +104,7 @@ export class UserController {
       throw Boom.internal('Error saving contact: ', err);
     }
 
-    return contact;
+    return ContactTransformer.outgoing(contact);
   }
 
   /**
@@ -107,7 +117,7 @@ export class UserController {
   public async deleteContact(
     @Path() userId: string,
     @Path() contactId: string,
-    @Header('Authorization') authHeader: string,
+    @Header('Authorization') authHeader: string
   ): Promise<any> {
     const token = getDecodedToken(authHeader);
 
@@ -138,7 +148,7 @@ export class UserController {
     return {
       statusCode: 200,
       message: 'Contact successfully deleted',
-      contactId
+      contactId,
     };
   }
 
@@ -151,7 +161,7 @@ export class UserController {
   public async getContacts(
     @Path() userId: string,
     @Header('Authorization') authHeader: string
-  ): Promise<any> {
+  ): Promise<ContactOutput[]> {
     const token = getDecodedToken(authHeader);
 
     if (token.userId !== userId) {
@@ -160,6 +170,29 @@ export class UserController {
 
     const contacts = await Contact.find({ owner: userId });
 
-    return contacts;
+    return contacts.map(ContactTransformer.outgoing);
+  }
+
+  /**
+   * Gets all lists that are owned by the user
+   */
+  @Security('jwt')
+  @Response(403)
+  @Get('{userId}/lists')
+  public async getLists(
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput[]> {
+    const token = getDecodedToken(authHeader);
+
+    if (token.userId !== userId) {
+      throw Boom.forbidden('User ID in path does not match user ID in token');
+    }
+
+    const lists: PopulatedListDocument[] = await List.find({
+      owner: userId,
+    }).populate('contacts');
+
+    return lists.map(ListTransformer.outgoing);
   }
 }

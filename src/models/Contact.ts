@@ -26,4 +26,8 @@ export const ContactSchema = new mongoose.Schema({
   },
 });
 
-export const Contact = mongoose.model<ContactDocument>('contacts', ContactSchema);
+export const Contact = mongoose.model<ContactDocument>(
+  'Contact',
+  ContactSchema,
+  'contacts'
+);
