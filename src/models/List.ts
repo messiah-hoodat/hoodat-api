@@ -5,7 +5,7 @@ import { UserDocument } from './User';
 export interface ListDocument extends mongoose.Document {
   name: string;
   owner: UserDocument['_id'];
-  color?: string;
+  color?: number;
   contacts?: ContactDocument['_id'][];
 }
 
@@ -20,7 +20,7 @@ export const ListSchema = new mongoose.Schema({
     required: true,
   },
   color: {
-    type: String,
+    type: Number,
     required: false,
   },
   contacts: [

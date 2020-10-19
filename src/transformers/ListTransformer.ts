@@ -6,7 +6,7 @@ export interface ListOutput {
   id: string;
   name: string;
   owner: string;
-  color: string;
+  color: number;
   contacts: ContactOutput[];
 }
 

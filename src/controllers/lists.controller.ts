@@ -13,13 +13,12 @@ import {
 } from 'tsoa';
 
 import { List, ListDocument } from '../models/List';
-import addListInputSchema from '../schemas/addListInputSchema';
 import getDecodedToken from '../lib/getDecodedToken';
 import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
 
 interface AddListInput {
   name: string;
-  color?: string;
+  color?: number;
 }
 
 @Route('/lists')
@@ -36,13 +35,6 @@ export class ListsController {
     @Body() input: AddListInput
   ): Promise<ListOutput> {
     const token = getDecodedToken(authHeader);
-
-    // Validate input
-    try {
-      await addListInputSchema.validateAsync(input);
-    } catch (err) {
-      throw Boom.badRequest('Validation failed', err);
-    }
 
     const list = new List({
       name: input.name,
