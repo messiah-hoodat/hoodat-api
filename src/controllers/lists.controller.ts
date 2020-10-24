@@ -10,6 +10,7 @@ import {
   Header,
   Response,
   Body,
+  Delete,
 } from 'tsoa';
 
 import { List, ListDocument } from '../models/List';
@@ -67,8 +68,13 @@ export class ListsController {
   ): Promise<ListOutput> {
     const token = getDecodedToken(authHeader);
 
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
     const list = await List.findById(listId);
-
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
     if (list.owner.toString() !== token.userId) {
       throw Boom.forbidden('You do not have permission to update this list');
     }
@@ -94,6 +100,54 @@ export class ListsController {
     // Add contact to list
     const contactId = contact._id;
     list.contacts.push(contactId);
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    const populatedList = await list.populate('contacts').execPopulate();
+
+    return ListTransformer.outgoing(populatedList);
+  }
+
+  /**
+   * Removes a contact from a list
+   */
+  @Security('jwt')
+  @Response(403)
+  @Response(400)
+  @Delete('{listId}/contacts/{contactId}')
+  public async removeContactFromList(
+    @Path() listId: string,
+    @Path() contactId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== token.userId) {
+      throw Boom.forbidden('You do not have permission to update this list');
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      throw Boom.badRequest('Invalid contact ID');
+    }
+    const contact = await Contact.findById(contactId);
+    if (!contact) {
+      throw Boom.notFound('Contact does not exist');
+    }
+
+    list.contacts = list.contacts.filter(
+      (contactId) => contactId.toString() !== contact._id.toString()
+    );
 
     try {
       await list.save();
