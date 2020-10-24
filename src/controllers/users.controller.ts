@@ -33,13 +33,13 @@ interface UserOutput {
   email: string;
 }
 
-interface AddContactInput {
+export interface AddContactInput {
   name: string;
   fileType: string;
   data: string;
 }
 
-const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png'];
+export const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png'];
 
 @Route('/users')
 @Tags('Users')
