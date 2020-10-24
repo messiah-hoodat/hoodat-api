@@ -10,6 +10,7 @@ import {
   Response,
   Body,
   Delete,
+  Deprecated,
 } from 'tsoa';
 import mongoose from 'mongoose';
 
@@ -73,6 +74,7 @@ export class UserController {
   /**
    * Creates a contact that is owned by the user
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Post('{userId}/contacts')
@@ -110,6 +112,7 @@ export class UserController {
   /**
    * Deletes a contact by contact ID
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Response(404)
@@ -155,6 +158,7 @@ export class UserController {
   /**
    * Gets all contacts that are owned by the user
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Get('{userId}/contacts')
