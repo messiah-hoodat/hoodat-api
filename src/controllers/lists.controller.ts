@@ -62,7 +62,7 @@ export class ListsController {
   }
 
   /**
-   * Adds a contact to a list
+   * Creates a contact and adds it to a list
    */
   @Security('jwt')
   @Response(403)
@@ -99,7 +99,7 @@ export class ListsController {
       throw Boom.internal('Error saving contact: ', err);
     }
 
-    // Creates a contact and adds it to a list
+    // Add contact to list
     const contactId = contact._id;
     list.contacts.push(contactId);
 
