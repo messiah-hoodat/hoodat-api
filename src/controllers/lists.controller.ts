@@ -77,7 +77,7 @@ export class ListsController {
 
     const list = await List.findById(listId);
 
-    if (list.owner !== token.userId) {
+    if (list.owner.toString() !== token.userId) {
       throw Boom.forbidden('You do not have permission to update this list');
     }
 
@@ -99,7 +99,7 @@ export class ListsController {
       throw Boom.internal('Error saving contact: ', err);
     }
 
-    // Add contact to list
+    // Creates a contact and adds it to a list
     const contactId = contact._id;
     list.contacts.push(contactId);
 
@@ -109,6 +109,8 @@ export class ListsController {
       throw Boom.internal('Error saving list: ', err);
     }
 
-    return ListTransformer.outgoing(list);
+    const populatedList = await list.populate('contacts').execPopulate();
+
+    return ListTransformer.outgoing(populatedList);
   }
 }
