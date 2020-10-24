@@ -113,7 +113,7 @@ export class ListsController {
   }
 
   /**
-   * Removes a contact from a list
+   * Removes a contact from a list and deletes the contact
    */
   @Security('jwt')
   @Response(403)
@@ -153,6 +153,12 @@ export class ListsController {
       await list.save();
     } catch (err) {
       throw Boom.internal('Error saving list: ', err);
+    }
+
+    try {
+      await contact.deleteOne();
+    } catch (err) {
+      throw Boom.internal('Error deleting contact: ', err);
     }
 
     const populatedList = await list.populate('contacts').execPopulate();
