@@ -90,6 +90,12 @@ export class ListsController {
       list.name = input.name;
     }
 
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error updating list: ', err);
+    }
+
     return ListTransformer.outgoing(list);
   }
 
