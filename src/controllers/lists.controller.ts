@@ -11,6 +11,7 @@ import {
   Response,
   Body,
   Delete,
+  Patch,
 } from 'tsoa';
 
 import { List, ListDocument } from '../models/List';
@@ -21,6 +22,11 @@ import { Contact } from '../models/Contact';
 
 interface AddListInput {
   name: string;
+  color?: number;
+}
+
+interface UpdateListInput {
+  name?: string;
   color?: number;
 }
 
@@ -49,6 +55,45 @@ export class ListsController {
       await list.save();
     } catch (err) {
       throw Boom.internal('Error saving list: ', err);
+    }
+
+    return ListTransformer.outgoing(list);
+  }
+
+  /**
+   * Updates a list
+   */
+  @Security('jwt')
+  @Patch('{listId}')
+  public async updateList(
+    @Path() listId: string,
+    @Header('Authorization') authHeader: string,
+    @Body() input: UpdateListInput
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== token.userId) {
+      throw Boom.forbidden('You do not have permission to update this list');
+    }
+
+    if (input.color !== undefined) {
+      list.color = input.color;
+    }
+    if (input.name) {
+      list.name = input.name;
+    }
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error updating list: ', err);
     }
 
     return ListTransformer.outgoing(list);
