@@ -55,6 +55,49 @@ export class ListsController {
   }
 
   /**
+   * Deletes a list and all contacts on the list
+   */
+  @Security('jwt')
+  @Delete('{listId}')
+  public async removeList(
+    @Path() listId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<any> {
+    const token = getDecodedToken(authHeader);
+
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== token.userId) {
+      throw Boom.forbidden('You do not have permission to delete this list');
+    }
+
+    for (const contact of list.contacts) {
+      try {
+        await Contact.findByIdAndDelete(contact);
+      } catch (err) {
+        throw Boom.internal('Error deleting contact: ', err);
+      }
+    }
+
+    try {
+      await list.deleteOne();
+    } catch (err) {
+      throw Boom.internal('Error deleting list: ', err);
+    }
+
+    return {
+      statusCode: 200,
+      message: 'List successfully deleted',
+      listId,
+    };
+  }
+
+  /**
    * Creates a contact and adds it to a list
    */
   @Security('jwt')
