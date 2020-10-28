@@ -96,7 +96,9 @@ export class ListsController {
       throw Boom.internal('Error updating list: ', err);
     }
 
-    return ListTransformer.outgoing(list);
+    const populatedList = await list.populate('contacts').execPopulate();
+
+    return ListTransformer.outgoing(populatedList);
   }
 
   /**
