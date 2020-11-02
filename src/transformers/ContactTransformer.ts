@@ -5,8 +5,7 @@ export interface ContactOutput {
   name: string;
   owner: string;
   image: {
-    fileType: string;
-    data: string;
+    url: string;
   };
 }
 
@@ -17,8 +16,7 @@ export class ContactTransformer {
       name: contact.name,
       owner: contact.owner,
       image: {
-        fileType: contact.fileType,
-        data: contact.data,
+        url: contact.image.url,
       },
     };
   }

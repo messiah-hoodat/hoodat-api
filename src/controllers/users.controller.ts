@@ -34,14 +34,6 @@ interface UserOutput {
   email: string;
 }
 
-export interface AddContactInput {
-  name: string;
-  fileType: string;
-  data: string;
-}
-
-export const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png'];
-
 @Route('/users')
 @Tags('Users')
 export class UserController {
@@ -69,44 +61,6 @@ export class UserController {
       return err;
     }
     return { userId: userId, name: user.name, email: user.email };
-  }
-
-  /**
-   * Creates a contact that is owned by the user
-   */
-  @Deprecated()
-  @Security('jwt')
-  @Response(403)
-  @Post('{userId}/contacts')
-  public async addContact(
-    @Path() userId: string,
-    @Header('Authorization') authHeader: string,
-    @Body() input: AddContactInput
-  ): Promise<ContactOutput> {
-    const token = getDecodedToken(authHeader);
-
-    if (token.userId !== userId) {
-      throw Boom.forbidden('User ID in path does not match user ID in token');
-    }
-
-    if (!ALLOWED_MIMETYPES.includes(input.fileType)) {
-      throw Boom.badRequest(`File type ${input.fileType} is not allowed`);
-    }
-
-    const contact = new Contact({
-      owner: userId,
-      name: input.name,
-      fileType: input.fileType,
-      data: input.data,
-    });
-
-    try {
-      await contact.save();
-    } catch (err) {
-      throw Boom.internal('Error saving contact: ', err);
-    }
-
-    return ContactTransformer.outgoing(contact);
   }
 
   /**

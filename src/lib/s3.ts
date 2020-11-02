@@ -1,2 +1,7 @@
 import AWS from 'aws-sdk';
-export default new AWS.S3();
+
+const options: AWS.S3.ClientConfiguration = {
+  region: 'us-east-2',
+};
+
+export default new AWS.S3(options);
