@@ -189,7 +189,7 @@ export class ListsController {
     const fileExtension = input.image.name.split('.').pop();
     const contentTypeMap = {
       jpeg: 'image/jpeg',
-      jpg: 'image/jpg',
+      jpg: 'image/jpeg',
       png: 'image/png',
     };
     const contentType = contentTypeMap[fileExtension];
