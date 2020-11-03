@@ -3,8 +3,9 @@ import mongoose from 'mongoose';
 export interface ContactDocument extends mongoose.Document {
   owner: string;
   name: string;
-  fileType: string;
-  data: string;
+  image: {
+    url: string;
+  };
 }
 
 export const ContactSchema = new mongoose.Schema({
@@ -16,13 +17,11 @@ export const ContactSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  fileType: {
-    type: String,
-    required: true,
-  },
-  data: {
-    type: String,
-    required: true,
+  image: {
+    url: {
+      type: String,
+      required: true,
+    },
   },
 });
 

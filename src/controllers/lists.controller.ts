@@ -17,8 +17,8 @@ import {
 import { List, ListDocument } from '../models/List';
 import getDecodedToken from '../lib/getDecodedToken';
 import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
-import { AddContactInput, ALLOWED_MIMETYPES } from './users.controller';
 import { Contact } from '../models/Contact';
+import s3 from '../lib/s3';
 
 interface AddListInput {
   name: string;
@@ -28,6 +28,14 @@ interface AddListInput {
 interface UpdateListInput {
   name?: string;
   color?: number;
+}
+
+interface AddContactInput {
+  name: string;
+  image: {
+    name: string;
+    data: string;
+  };
 }
 
 @Route('/lists')
@@ -156,6 +164,8 @@ export class ListsController {
     @Header('Authorization') authHeader: string,
     @Body() input: AddContactInput
   ): Promise<ListOutput> {
+    const { AWS_S3_BUCKET_NAME } = process.env;
+
     const token = getDecodedToken(authHeader);
 
     if (!mongoose.Types.ObjectId.isValid(listId)) {
@@ -169,18 +179,45 @@ export class ListsController {
       throw Boom.forbidden('You do not have permission to update this list');
     }
 
-    if (!ALLOWED_MIMETYPES.includes(input.fileType)) {
-      throw Boom.badRequest(`File type ${input.fileType} is not allowed`);
-    }
-
     // Create contact
     const contact = new Contact({
       owner: token.userId,
       name: input.name,
-      fileType: input.fileType,
-      data: input.data,
     });
 
+    // Upload image
+    const fileExtension = input.image.name.split('.').pop();
+    const contentTypeMap = {
+      jpeg: 'image/jpeg',
+      jpg: 'image/jpeg',
+      png: 'image/png',
+    };
+    const contentType = contentTypeMap[fileExtension];
+    if (!contentType) {
+      throw Boom.badRequest('Unsupported file type');
+    }
+
+    const params: AWS.S3.PutObjectRequest = {
+      ACL: 'public-read',
+      Body: Buffer.from(input.image.data, 'base64'),
+      ContentEncoding: 'base64',
+      ContentType: contentType,
+      Bucket: AWS_S3_BUCKET_NAME,
+      Key: `contact_images/${contact._id}.${fileExtension}`,
+    };
+
+    let data: AWS.S3.ManagedUpload.SendData;
+    try {
+      data = await s3.upload(params).promise();
+    } catch (err) {
+      console.log(err);
+      throw Boom.internal('Error uploading file: ', err);
+    }
+
+    // Add URL to contact
+    contact.image.url = data.Location;
+
+    // Save contact
     try {
       await contact.save();
     } catch (err) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Route, Tags, Hidden } from 'tsoa';
+import { Controller, Get, Route, Tags, Hidden, Body, Post } from 'tsoa';
 
 @Route('')
 @Tags('Status')
