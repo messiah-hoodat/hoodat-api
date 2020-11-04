@@ -251,6 +251,8 @@ export class ListsController {
     @Path() contactId: string,
     @Header('Authorization') authHeader: string
   ): Promise<ListOutput> {
+    const { AWS_S3_BUCKET_NAME } = process.env;
+
     const token = getDecodedToken(authHeader);
 
     if (!mongoose.Types.ObjectId.isValid(listId)) {
@@ -286,6 +288,19 @@ export class ListsController {
       await contact.deleteOne();
     } catch (err) {
       throw Boom.internal('Error deleting contact: ', err);
+    }
+
+    const key = new URL(contact.image.url).pathname.substring(1);
+    const params: AWS.S3.DeleteObjectRequest = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Key: key,
+    };
+
+    try {
+      await s3.deleteObject(params).promise();
+    } catch (err) {
+      console.log(err);
+      throw Boom.internal('Error deleting file: ', err);
     }
 
     const populatedList = await list.populate('contacts').execPopulate();
