@@ -14,7 +14,7 @@ import {
 
 import getDecodedToken from '../lib/getDecodedToken';
 import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
-import ListService from 'services/ListService';
+import ListService from '../services/ListService';
 
 export interface AddListInput {
   name: string;
