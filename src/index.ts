@@ -1,12 +1,12 @@
-import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
 import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 
 import { RegisterRoutes } from './routes/routes';
 import { errorHandler } from './validation/errorHandler';
-
-dotenv.config();
 
 const { DB_CONNECTION_STRING, PORT } = process.env;
 
