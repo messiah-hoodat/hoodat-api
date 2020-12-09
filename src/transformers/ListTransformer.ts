@@ -1,6 +1,6 @@
 import { ContactOutput, ContactTransformer } from './ContactTransformer';
-import { ListDocument } from 'models/List';
-import { ContactDocument } from 'models/Contact';
+import { ListDocument } from '../models/List';
+import { ContactDocument } from '../models/Contact';
 
 export interface ListOutput {
   id: string;

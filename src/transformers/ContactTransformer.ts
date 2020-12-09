@@ -1,4 +1,4 @@
-import { ContactDocument } from 'models/Contact';
+import { ContactDocument } from '../models/Contact';
 
 export interface ContactOutput {
   id: string;

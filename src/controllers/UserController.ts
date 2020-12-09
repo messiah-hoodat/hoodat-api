@@ -15,9 +15,9 @@ import {
   ListOutput,
   ListTransformer,
 } from '../transformers/ListTransformer';
-import ListService from 'services/ListService';
-import { UserOutput, UserTransformer } from 'transformers/UserTransformer';
-import UserService from 'services/UserService';
+import ListService from '../services/ListService';
+import { UserOutput, UserTransformer } from '../transformers/UserTransformer';
+import UserService from '../services/UserService';
 
 @Route('/users')
 @Tags('Users')

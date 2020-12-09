@@ -1,11 +1,11 @@
 import Boom from "@hapi/boom";
 import jwt from 'jsonwebtoken';
+import { compareSync, hashSync } from "bcrypt";
 
 import UserService from "./UserService";
-import { compareSync, hashSync } from "bcrypt";
-import { TokenOutput, SignUpInput } from "controllers/AuthController";
-import { signUpInputSchema } from "schemas/signUpInputSchema";
-import { User, UserDocument } from "models/User";
+import { TokenOutput, SignUpInput } from "../controllers/AuthController";
+import { signUpInputSchema } from "../schemas/signUpInputSchema";
+import { User, UserDocument } from "../models/User";
 
 class AuthService {
   public async signIn(email: string, password: string): Promise<TokenOutput> {

@@ -1,7 +1,7 @@
 import Boom from "@hapi/boom";
 import mongoose from 'mongoose';
 
-import { UserDocument, User } from "models/User";
+import { UserDocument, User } from "../models/User";
 
 class UserService {
   public async getUser(userId: string): Promise<UserDocument> {

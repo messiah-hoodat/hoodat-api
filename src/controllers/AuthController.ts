@@ -1,6 +1,6 @@
 import { Controller, Post, Route, Tags, Body, Response } from 'tsoa';
 
-import AuthService from 'services/AuthService';
+import AuthService from '../services/AuthService';
 
 interface TokenInput {
   email: string;
