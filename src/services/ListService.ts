@@ -155,6 +155,12 @@ class ListService {
 
     return await list.populate('contacts').execPopulate();
   }
+
+  public async getLists(userId: string): Promise<PopulatedListDocument[]> {
+    return await List.find({
+      owner: userId,
+    }).populate('contacts');;
+  }
 }
 
 export default new ListService();
