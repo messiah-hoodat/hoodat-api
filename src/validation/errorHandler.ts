@@ -23,6 +23,15 @@ export function errorHandler(
     return res.status(err.output.statusCode).json(err.output.payload);
   }
 
+  if (err instanceof SyntaxError) {
+    console.warn(`Caught Syntax Error for ${req.path}`);
+    return res.status(400).json({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Invalid JSON syntax in request body'
+    });
+  }
+
   if (err instanceof Error) {
     console.warn(`Caught Internal Server Error for ${req.path}`);
     return res.status(500).json({
