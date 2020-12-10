@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import { ContactDocument } from './Contact';
 import { UserDocument } from './User';
 

@@ -1,20 +1,23 @@
 import mongoose from 'mongoose';
 
+import { UserDocument } from './User';
+
 export interface ContactDocument extends mongoose.Document {
-  owner: string;
   name: string;
+  owner: UserDocument['_id'];
   image: {
     url: string;
   };
 }
 
 export const ContactSchema = new mongoose.Schema({
-  owner: {
+  name: {
     type: String,
     required: true,
   },
-  name: {
-    type: String,
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   image: {
