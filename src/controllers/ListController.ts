@@ -26,12 +26,14 @@ export interface UpdateListInput {
   color?: number;
 }
 
+export interface AddContactImage {
+  name: string;
+  data: string;
+}
+
 export interface AddContactInput {
   name: string;
-  image: {
-    name: string;
-    data: string;
-  };
+  image: AddContactImage;
 }
 
 @Route('/lists')
