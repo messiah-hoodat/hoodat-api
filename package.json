@@ -9,13 +9,12 @@
     "build:ts": "tsc -p src",
     "build": "npm run build:routes && npm run build:swagger && npm run build:ts",
     "serve": "node dist/index.js",
-    "start": "npm run build && npm run serve"
+    "start": "npm run build && npm run serve",
+    "test": "jest"
   },
   "author": "Eric Weischedel",
   "dependencies": {
     "@hapi/boom": "^9.1.0",
-    "@types/mongoose": "^5.7.36",
-    "@types/swagger-ui-express": "^4.1.2",
     "aws-sdk": "^2.782.0",
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
@@ -28,13 +27,19 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@types/jest": "^26.0.18",
     "@types/joi": "^14.3.4",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.161",
+    "@types/mongoose": "^5.10.2",
     "@types/node": "^14.0.13",
+    "@types/swagger-ui-express": "^4.1.2",
+    "jest": "^26.6.3",
     "mkdirp": "^1.0.4",
     "prettier": "2.1.2",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
     "tsoa": "^3.2.1",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.7"
   }
 }
