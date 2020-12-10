@@ -1,4 +1,5 @@
 import Boom from '@hapi/boom';
+import mongoose from 'mongoose';
 
 import { AddContactInput } from '../controllers/ListController';
 import { Contact, ContactDocument } from '../models/Contact';
@@ -11,8 +12,8 @@ class ContactService {
   ): Promise<ContactDocument> {
     // Create contact
     const contact = new Contact({
-      owner: ownerId,
       name: input.name,
+      owner: mongoose.Types.ObjectId(ownerId),
     });
 
     // Upload image
