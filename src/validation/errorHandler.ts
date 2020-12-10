@@ -28,7 +28,7 @@ export function errorHandler(
     return res.status(400).json({
       statusCode: 400,
       error: 'Bad Request',
-      message: 'Invalid JSON syntax in request body'
+      message: 'Invalid JSON syntax in request body',
     });
   }
 

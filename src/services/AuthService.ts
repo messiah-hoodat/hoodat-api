@@ -1,11 +1,11 @@
-import Boom from "@hapi/boom";
+import Boom from '@hapi/boom';
 import jwt from 'jsonwebtoken';
-import { compareSync, hashSync } from "bcrypt";
+import { compareSync, hashSync } from 'bcrypt';
 
-import UserService from "./UserService";
-import { TokenOutput, SignUpInput } from "../controllers/AuthController";
-import { signUpInputSchema } from "../schemas/signUpInputSchema";
-import { User, UserDocument } from "../models/User";
+import UserService from './UserService';
+import { TokenOutput, SignUpInput } from '../controllers/AuthController';
+import { signUpInputSchema } from '../schemas/signUpInputSchema';
+import { User, UserDocument } from '../models/User';
 
 class AuthService {
   public async signIn(email: string, password: string): Promise<TokenOutput> {
@@ -42,7 +42,11 @@ class AuthService {
     const hashedPassword = hashSync(input.password, 10);
 
     // Create a new user
-    const user = new User({ name: input.name, email: input.email, password: hashedPassword });
+    const user = new User({
+      name: input.name,
+      email: input.email,
+      password: hashedPassword,
+    });
     try {
       await user.save();
     } catch (err) {

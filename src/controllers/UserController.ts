@@ -1,20 +1,8 @@
 import Boom from '@hapi/boom';
-import {
-  Post,
-  Get,
-  Route,
-  Tags,
-  Path,
-  Security,
-  Header,
-  Response,
-} from 'tsoa';
+import { Post, Get, Route, Tags, Path, Security, Header, Response } from 'tsoa';
 
 import getDecodedToken from '../lib/getDecodedToken';
-import {
-  ListOutput,
-  ListTransformer,
-} from '../transformers/ListTransformer';
+import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
 import ListService from '../services/ListService';
 import { UserOutput, UserTransformer } from '../transformers/UserTransformer';
 import UserService from '../services/UserService';

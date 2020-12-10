@@ -11,7 +11,7 @@ export class UserTransformer {
     return {
       id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
     };
   }
 }

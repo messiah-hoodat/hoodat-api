@@ -159,7 +159,7 @@ class ListService {
   public async getLists(userId: string): Promise<PopulatedListDocument[]> {
     return await List.find({
       owner: userId,
-    }).populate('contacts');;
+    }).populate('contacts');
   }
 }
 
