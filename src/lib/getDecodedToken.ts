@@ -6,6 +6,14 @@ export interface TokenPayload {
 
 export default function getDecodedToken(authHeader: string): TokenPayload {
   const token = authHeader.split('Bearer ')[1];
-  const decoded = jwt.decode(token, { json: true });
-  return decoded as TokenPayload;
+  if (!token) {
+    throw new Error('Auth header does not contain a bearer token');
+  }
+
+  const payload = jwt.decode(token, { json: true });
+  if (!payload) {
+    throw new Error('Unable to decode token');
+  }
+
+  return payload as TokenPayload;
 }

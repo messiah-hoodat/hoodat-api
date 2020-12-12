@@ -11,6 +11,14 @@ jobs:
           steps:
             - run: npm install
             - run: npm run build
+  test:
+    executor: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: npm test
   deploy:
     executor: heroku/default
     steps:
@@ -23,9 +31,11 @@ workflows:
   default:
     jobs:
       - build
+      - test
       - deploy:
           requires:
             - build
+            - test
           filters:
             branches:
               only: master
