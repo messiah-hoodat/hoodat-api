@@ -12,7 +12,7 @@ const EXTENSION_TO_MIME_TYPE_MAP = {
 };
 
 class StorageService {
-  private s3: S3;
+  public s3: S3;
 
   constructor() {
     this.s3 = new S3({
@@ -53,7 +53,13 @@ class StorageService {
   }
 
   public async deleteFile(url: string): Promise<void> {
-    const key = new URL(url).pathname.substring(1);
+    let key;
+    try {
+      key = new URL(url).pathname.substring(1);
+    } catch {
+      throw new Error('Invalid URL');
+    }
+
     const params: AWS.S3.DeleteObjectRequest = {
       Bucket: AWS_S3_BUCKET_NAME,
       Key: key,
