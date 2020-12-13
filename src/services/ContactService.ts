@@ -10,6 +10,10 @@ class ContactService {
     input: AddContactInput,
     ownerId: string
   ): Promise<ContactDocument> {
+    if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+      throw Boom.badRequest('Invalid owner ID');
+    }
+
     // Create contact
     const contact = new Contact({
       name: input.name,
