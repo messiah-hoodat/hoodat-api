@@ -16,6 +16,10 @@ class ListService {
     input: AddListInput,
     ownerId: string
   ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+      throw Boom.badRequest('Invalid owner ID');
+    }
+
     const list = new List({
       name: input.name,
       owner: mongoose.Types.ObjectId(ownerId),
@@ -39,6 +43,10 @@ class ListService {
     if (!mongoose.Types.ObjectId.isValid(listId)) {
       throw Boom.badRequest('Invalid list ID');
     }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
     const list = await List.findById(listId);
     if (!list) {
       throw Boom.notFound('List does not exist');
@@ -67,6 +75,10 @@ class ListService {
     if (!mongoose.Types.ObjectId.isValid(listId)) {
       throw Boom.badRequest('Invalid list ID');
     }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
     const list = await List.findById(listId);
     if (!list) {
       throw Boom.notFound('List does not exist');
@@ -96,6 +108,10 @@ class ListService {
     if (!mongoose.Types.ObjectId.isValid(listId)) {
       throw Boom.badRequest('Invalid list ID');
     }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
     const list = await List.findById(listId);
     if (!list) {
       throw Boom.notFound('List does not exist');
@@ -122,9 +138,16 @@ class ListService {
     listId: string,
     userId: string
   ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      throw Boom.badRequest('Invalid contact ID');
+    }
     if (!mongoose.Types.ObjectId.isValid(listId)) {
       throw Boom.badRequest('Invalid list ID');
     }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
     const list = await List.findById(listId);
     if (!list) {
       throw Boom.notFound('List does not exist');
@@ -133,9 +156,6 @@ class ListService {
       throw Boom.forbidden('You do not have permission to update this list');
     }
 
-    if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      throw Boom.badRequest('Invalid contact ID');
-    }
     const contact = await Contact.findById(contactId);
     if (!contact) {
       throw Boom.notFound('Contact does not exist');
