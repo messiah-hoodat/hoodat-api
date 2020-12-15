@@ -56,7 +56,7 @@ class AuthService {
     return { userId: user._id, token: await this.createToken(user._id) };
   }
 
-  private createToken(userId: string): string {
+  public createToken(userId: string): string {
     return jwt.sign({ userId }, process.env.TOKEN_SECRET);
   }
 }
