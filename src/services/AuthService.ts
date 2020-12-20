@@ -6,6 +6,7 @@ import UserService from './UserService';
 import { TokenOutput, SignUpInput } from '../controllers/AuthController';
 import { signUpInputSchema } from '../schemas/signUpInputSchema';
 import { User, UserDocument } from '../models/User';
+import MailService from './MailService';
 
 class AuthService {
   public async signIn(email: string, password: string): Promise<TokenOutput> {
@@ -52,6 +53,9 @@ class AuthService {
     } catch (err) {
       throw Boom.internal('Error creating new user', err);
     }
+
+    // Send welcome email
+    MailService.sendWelcomeEmail(user.email);
 
     return { userId: user._id, token: await this.createToken(user._id) };
   }
