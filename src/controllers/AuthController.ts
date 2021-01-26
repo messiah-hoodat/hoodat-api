@@ -1,6 +1,16 @@
-import { Controller, Post, Route, Tags, Body, Response } from 'tsoa';
+import {
+  Controller,
+  Post,
+  Route,
+  Tags,
+  Body,
+  Response,
+  Security,
+  Header,
+} from 'tsoa';
 
 import AuthService from '../services/AuthService';
+import getDecodedToken from '../lib/getDecodedToken';
 
 interface TokenInput {
   email: string;
@@ -15,6 +25,10 @@ export interface TokenOutput {
 export interface SignUpInput {
   name: string;
   email: string;
+  password: string;
+}
+
+interface ResetPasswordInput {
   password: string;
 }
 
@@ -39,5 +53,19 @@ export class AuthController extends Controller {
   @Post('/sign-up')
   public async signUp(@Body() input: SignUpInput): Promise<TokenOutput> {
     return await AuthService.signUp(input);
+  }
+
+  /**
+   * Updates a user's password
+   */
+  @Security('jwt')
+  @Post('/reset-password')
+  public async resetPassword(
+    @Header('Authorization') authHeader: string,
+    @Body() input: ResetPasswordInput
+  ): Promise<void> {
+    const token = getDecodedToken(authHeader);
+
+    await AuthService.resetPassword(token.userId, input.password);
   }
 }
