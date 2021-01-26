@@ -63,6 +63,23 @@ class AuthService {
   public createToken(userId: string): string {
     return jwt.sign({ userId }, process.env.TOKEN_SECRET);
   }
+
+  public async resetPassword(userId: string, password: string): Promise<void> {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw Boom.notFound('User not found');
+    }
+
+    const hashedPassword = hashSync(password, 10);
+
+    user.password = hashedPassword;
+
+    try {
+      await user.save();
+    } catch (err) {
+      throw Boom.internal('Error saving user', err);
+    }
+  }
 }
 
 export default new AuthService();
