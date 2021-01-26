@@ -4,7 +4,7 @@ import { compareSync, hashSync } from 'bcrypt';
 
 import UserService from './UserService';
 import { TokenOutput, SignUpInput } from '../controllers/AuthController';
-import { signUpInputSchema } from '../schemas/signUpInputSchema';
+import { signUpInputSchema, passwordSchema } from '../schemas/signUpInputSchema';
 import { User, UserDocument } from '../models/User';
 import MailService from './MailService';
 
@@ -65,6 +65,13 @@ class AuthService {
   }
 
   public async resetPassword(userId: string, password: string): Promise<void> {
+    // Validate input
+    try {
+      await passwordSchema.validateAsync(password);
+    } catch (err) {
+      throw Boom.badRequest('Validation failed', err);
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       throw Boom.notFound('User not found');
