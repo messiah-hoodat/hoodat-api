@@ -32,6 +32,8 @@ export default class App {
     const swaggerDocument = require('../api/dist/swagger.json');
     app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+    app.use('/static', express.static('public'));
+
     app.use(errorHandler);
   }
 

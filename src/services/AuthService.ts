@@ -4,7 +4,10 @@ import { compareSync, hashSync } from 'bcrypt';
 
 import UserService from './UserService';
 import { TokenOutput, SignUpInput } from '../controllers/AuthController';
-import { signUpInputSchema, passwordSchema } from '../schemas/signUpInputSchema';
+import {
+  signUpInputSchema,
+  passwordSchema,
+} from '../schemas/signUpInputSchema';
 import { User, UserDocument } from '../models/User';
 import MailService from './MailService';
 
