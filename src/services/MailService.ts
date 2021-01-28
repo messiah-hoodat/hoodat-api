@@ -41,7 +41,7 @@ class MailService {
   public async sendResetPasswordEmail(to: string): Promise<void> {
     const user = await UserService.getUserByEmail(to);
     const token = AuthService.createToken(user.id);
-    const link = `http://localhost:8000/static/reset-password.html?token=${token}`;
+    const link = `https://hoodat-api.herokuapp.com/static/reset-password.html?token=${token}`;
 
     const mailOptions = {
       from: {
