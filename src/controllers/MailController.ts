@@ -1,7 +1,7 @@
 import MailService from '../services/MailService';
 import { Route, Tags, Security, Post, Body, Header } from 'tsoa';
 
-interface ForgotPasswordEmailInput {
+interface EmailInput {
   email: string;
 }
 
@@ -13,8 +13,18 @@ export class MailController {
    */
   @Post('forgot-password')
   public async sendResetPasswordEmail(
-    @Body() input: ForgotPasswordEmailInput
+    @Body() input: EmailInput
   ): Promise<void> {
     await MailService.sendResetPasswordEmail(input.email);
+  }
+
+  /**
+   * Send test email
+   */
+  @Post('test')
+  public async sendTestEmailInput(
+    @Body() input: EmailInput
+  ): Promise<void> {
+    await MailService.sendWelcomeEmail(input.email);
   }
 }
