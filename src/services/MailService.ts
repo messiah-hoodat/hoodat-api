@@ -49,8 +49,8 @@ class MailService {
         address: 'messiah.hoodat@gmail.com',
       },
       to,
-      subject: 'Hoodat Password Reset Request',
-      text: `To reset your password, click the link: ${link}`,
+      subject: 'Password Reset Request',
+      text: `Hey there! We have received a request from your account to reset your password. If this was not you, please ignore this email. To reset your password, follow this link to the reset password form: ${link}`,
     };
 
     try {
