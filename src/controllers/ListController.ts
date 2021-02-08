@@ -145,13 +145,30 @@ export class ListController {
   public async addViewerToList(
     @Path() listId: string,
     @Body() input: AddViewerInput,
-    @Header('Authorization')
-    authHeader: string
+    @Header('Authorization') authHeader: string
   ): Promise<ListOutput> {
     const token = getDecodedToken(authHeader);
 
     return ListTransformer.outgoing(
       await ListService.addViewerToList(input.email, listId, token.userId)
+    );
+  }
+
+  /**
+   * Revokes a user's permission to view the list
+   */
+  @Security('jwt')
+  @Response(403)
+  @Delete('{listId}/viewers/{userId}')
+  public async removeViewerFromList(
+    @Path() listId: string,
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.removeViewerFromList(userId, listId, token.userId)
     );
   }
 }

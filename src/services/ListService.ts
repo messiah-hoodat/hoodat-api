@@ -222,6 +222,40 @@ class ListService {
 
     return await list.populate('contacts').execPopulate();
   }
+
+  public async removeViewerFromList(
+    viewerId: string,
+    listId: string,
+    requesterId: string
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    if (!mongoose.Types.ObjectId.isValid(viewerId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
+    const user = await UserService.getUser(requesterId);
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== user.id) {
+      throw Boom.forbidden(
+        'You must be the owner of the list to remove a viewer.'
+      );
+    }
+
+    list.viewers = list.viewers.filter((id) => id.toString() !== viewerId);
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    return await list.populate('contacts').execPopulate();
+  }
 }
 
 export default new ListService();
