@@ -8,6 +8,7 @@ export interface ListOutput {
   owner: string;
   color: number;
   contacts: ContactOutput[];
+  viewers: string[];
 }
 
 export interface PopulatedListDocument extends ListDocument {
@@ -22,6 +23,7 @@ export class ListTransformer {
       owner: list.owner,
       color: list.color,
       contacts: list.contacts.map(ContactTransformer.outgoing),
+      viewers: list.viewers,
     };
   }
 }
