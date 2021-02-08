@@ -36,6 +36,10 @@ export interface AddContactInput {
   image: AddContactImage;
 }
 
+interface AddViewerInput {
+  email: string;
+}
+
 @Route('/lists')
 @Tags('Lists')
 export class ListController {
@@ -128,6 +132,23 @@ export class ListController {
 
     return ListTransformer.outgoing(
       await ListService.removeContactFromList(contactId, listId, token.userId)
+    );
+  }
+
+  /**
+   * Allows a user to view the list
+   */
+  @Post('{listId}/viewers')
+  public async addViewerToList(
+    @Path() listId: string,
+    @Body() input: AddViewerInput,
+    @Header('Authorization')
+    authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.addViewerToList(input.email, listId, token.userId)
     );
   }
 }

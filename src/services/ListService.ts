@@ -10,6 +10,7 @@ import { Contact } from '../models/Contact';
 import { List } from '../models/List';
 import { PopulatedListDocument } from '../transformers/ListTransformer';
 import ContactService from './ContactService';
+import UserService from './UserService';
 
 class ListService {
   public async createList(
@@ -180,6 +181,38 @@ class ListService {
     return await List.find({
       owner: userId,
     }).populate('contacts');
+  }
+
+  public async addViewerToList(
+    email: string,
+    listId: string,
+    userId: string
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+
+    const user = await UserService.getUser(userId);
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== user.id) {
+      throw Boom.forbidden(
+        'You must be the owner of the list to add a viewer.'
+      );
+    }
+
+    const viewer = await UserService.getUserByEmail(email);
+    list.viewers.push(viewer.id);
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    return await list.populate('contacts').execPopulate();
   }
 }
 
