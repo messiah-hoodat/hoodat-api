@@ -49,4 +49,25 @@ export class UserController {
 
     return lists.map(ListTransformer.outgoing);
   }
+
+  /**
+   * Gets all lists that are shared with the user
+   */
+  @Security('jwt')
+  @Response(403)
+  @Get('{userId}/shared-lists')
+  public async getSharedLists(
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput[]> {
+    const token = getDecodedToken(authHeader);
+
+    if (token.userId !== userId) {
+      throw Boom.forbidden('User ID in path does not match user ID in token');
+    }
+
+    const lists = await ListService.getSharedLists(userId);
+
+    return lists.map(ListTransformer.outgoing);
+  }
 }

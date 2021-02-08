@@ -183,6 +183,14 @@ class ListService {
     }).populate('contacts');
   }
 
+  public async getSharedLists(
+    userId: string
+  ): Promise<PopulatedListDocument[]> {
+    return await List.find({
+      viewers: userId,
+    }).populate('contacts');
+  }
+
   public async addViewerToList(
     email: string,
     listId: string,

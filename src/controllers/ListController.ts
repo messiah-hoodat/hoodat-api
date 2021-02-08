@@ -138,6 +138,9 @@ export class ListController {
   /**
    * Allows a user to view the list
    */
+  @Security('jwt')
+  @Response(403)
+  @Response(404, 'User not found')
   @Post('{listId}/viewers')
   public async addViewerToList(
     @Path() listId: string,
