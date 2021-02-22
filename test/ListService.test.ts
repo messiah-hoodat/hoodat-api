@@ -29,6 +29,7 @@ describe('ListService', () => {
 
     test('should create list', async () => {
       jest.spyOn(List.prototype, 'save').mockImplementationOnce(() => { });
+      jest.spyOn(mongoose.Document.prototype, 'populate').mockImplementationOnce(() => ({ populate() { return { populate() { return { execPopulate() { return {} } } } } } }) as never);
 
       await expect(ListService.createList(input, id)).resolves.not.toThrow();
     });
@@ -270,7 +271,7 @@ describe('ListService', () => {
 
     test('should get lists belonging to the user', async () => {
       const list = {
-        populate() { return [{ _id: '1' }, { _id: '2' }]; },
+        populate() { return { populate() { return { populate() { return [{ _id: '1' }, { _id: '2' }]; } } } } },
       };
       jest.spyOn(List, 'find').mockReturnValueOnce(list as never);
 
