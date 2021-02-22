@@ -11,6 +11,7 @@ import { List } from '../models/List';
 import { PopulatedListDocument } from '../transformers/ListTransformer';
 import ContactService from './ContactService';
 import UserService from './UserService';
+import MailService from './MailService';
 
 class ListService {
   public async createList(
@@ -241,6 +242,8 @@ class ListService {
     } catch (err) {
       throw Boom.internal('Error saving list: ', err);
     }
+
+    MailService.sendListSharedEmail(email, user.name, list.name);
 
     return await list
       .populate('contacts')

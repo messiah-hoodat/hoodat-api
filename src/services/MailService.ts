@@ -59,6 +59,24 @@ class MailService {
       console.error(`Error sending reset password email: ${error}`);
     }
   }
+
+  public async sendListSharedEmail(to: string, from: string, listName: string): Promise<void> {
+    const mailOptions = {
+      from: {
+        name: 'Hoodat Team',
+        address: 'messiah.hoodat@gmail.com',
+      },
+      to,
+      subject: `Someone shared a list with you`,
+      text: `Hi there! ${from} just shared a list with you called "${listName}". Open the "Shared With Me" tab in the Hoodat app to check it out.`,
+    };
+
+    try {
+      await this.transport.sendMail(mailOptions);
+    } catch (error) {
+      console.error(`Error sending list shared email: ${error}`);
+    }
+  }
 }
 
 export default new MailService();
