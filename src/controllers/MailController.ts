@@ -22,9 +22,7 @@ export class MailController {
    * Send test email
    */
   @Post('test')
-  public async sendTestEmailInput(
-    @Body() input: EmailInput
-  ): Promise<void> {
+  public async sendTestEmailInput(@Body() input: EmailInput): Promise<void> {
     await MailService.sendWelcomeEmail(input.email);
   }
 }

@@ -33,7 +33,11 @@ class ListService {
       throw Boom.internal('Error saving list: ', err);
     }
 
-    return await list.populate('contacts').execPopulate();
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner')
+      .execPopulate();
   }
 
   public async updateList(
@@ -69,7 +73,11 @@ class ListService {
       throw Boom.internal('Error updating list: ', err);
     }
 
-    return await list.populate('contacts').execPopulate();
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner')
+      .execPopulate();
   }
 
   public async deleteList(listId: string, userId: string): Promise<void> {
@@ -131,7 +139,11 @@ class ListService {
       throw Boom.internal('Error saving list: ', err);
     }
 
-    return await list.populate('contacts').execPopulate();
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner')
+      .execPopulate();
   }
 
   public async removeContactFromList(
@@ -174,13 +186,20 @@ class ListService {
 
     await ContactService.deleteContact(contact._id);
 
-    return await list.populate('contacts').execPopulate();
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner')
+      .execPopulate();
   }
 
   public async getLists(userId: string): Promise<PopulatedListDocument[]> {
     return await List.find({
       owner: userId,
-    }).populate('contacts');
+    })
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner');
   }
 
   public async getSharedLists(
@@ -188,7 +207,10 @@ class ListService {
   ): Promise<PopulatedListDocument[]> {
     return await List.find({
       viewers: userId,
-    }).populate('contacts');
+    })
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner');
   }
 
   public async addViewerToList(
@@ -220,7 +242,11 @@ class ListService {
       throw Boom.internal('Error saving list: ', err);
     }
 
-    return await list.populate('contacts').execPopulate();
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner')
+      .execPopulate();
   }
 
   public async removeViewerFromList(
@@ -254,7 +280,11 @@ class ListService {
       throw Boom.internal('Error saving list: ', err);
     }
 
-    return await list.populate('contacts').execPopulate();
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('owner')
+      .execPopulate();
   }
 }
 
