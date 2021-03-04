@@ -155,6 +155,25 @@ export class ListController {
   }
 
   /**
+   * Allows a user to edit the list
+   */
+  @Security('jwt')
+  @Response(403)
+  @Response(404, 'User not found')
+  @Post('{listId}/editors')
+  public async addEditorToList(
+    @Path() listId: string,
+    @Body() input: AddViewerInput,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.addEditorToList(input.email, listId, token.userId)
+    );
+  }
+
+  /**
    * Revokes a user's permission to view the list
    */
   @Security('jwt')
@@ -169,6 +188,24 @@ export class ListController {
 
     return ListTransformer.outgoing(
       await ListService.removeViewerFromList(userId, listId, token.userId)
+    );
+  }
+
+  /**
+   * Revokes a user's permission to edit the list
+   */
+  @Security('jwt')
+  @Response(403)
+  @Delete('{listId}/editors/{userId}')
+  public async removeEditorFromList(
+    @Path() listId: string,
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.removeEditorFromList(userId, listId, token.userId)
     );
   }
 }
