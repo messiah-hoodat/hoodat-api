@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import {
   AddContactInput,
   AddListInput,
+  Role,
   UpdateListInput,
 } from '../controllers/ListController';
 import { Contact } from '../models/Contact';
@@ -361,6 +362,57 @@ class ListService {
     }
 
     list.editors = list.editors.filter((id) => id.toString() !== editorId);
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('editors')
+      .populate('owner')
+      .execPopulate();
+  }
+
+  public async updateSharee(
+    shareeId: string,
+    listId: string,
+    requesterId: string,
+    role: Role
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    if (!mongoose.Types.ObjectId.isValid(shareeId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
+    const user = await UserService.getUser(requesterId);
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== user.id) {
+      throw Boom.forbidden(
+        'You must be the owner of the list to remove an editor.'
+      );
+    }
+
+    const sharee = await UserService.getUser(shareeId);
+
+    switch (role) {
+      case "viewer":
+        list.editors = list.editors.filter((id) => id.toString() !== shareeId);
+        list.viewers.push(sharee.id);
+        break;
+      case "editor":
+        list.viewers = list.viewers.filter((id) => id.toString() !== shareeId);
+        list.editors.push(sharee.id);
+        break;
+    }
 
     try {
       await list.save();

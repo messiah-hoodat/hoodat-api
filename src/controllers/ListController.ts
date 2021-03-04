@@ -40,6 +40,12 @@ interface AddViewerInput {
   email: string;
 }
 
+export type Role = "viewer" | "editor";
+
+export interface UpdateShareeInput {
+  role: Role
+}
+
 @Route('/lists')
 @Tags('Lists')
 export class ListController {
@@ -206,6 +212,25 @@ export class ListController {
 
     return ListTransformer.outgoing(
       await ListService.removeEditorFromList(userId, listId, token.userId)
+    );
+  }
+
+  /**
+   * Updates a sharees role
+   */
+  @Security('jwt')
+  @Response(403)
+  @Patch('{listId}/sharees/{userId}')
+  public async updateSharee(
+    @Path() listId: string,
+    @Path() userId: string,
+    @Body() input: UpdateShareeInput,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.updateSharee(userId, listId, token.userId, input.role)
     );
   }
 }
