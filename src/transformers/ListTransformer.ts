@@ -10,6 +10,7 @@ export interface ListOutput {
   color: number;
   contacts: ContactOutput[];
   viewers: UserOutput[];
+  editors: UserOutput[];
 }
 
 export interface PopulatedListDocument extends ListDocument {
@@ -25,6 +26,7 @@ export class ListTransformer {
       color: list.color,
       contacts: list.contacts.map(ContactTransformer.outgoing),
       viewers: list.viewers.map(UserTransformer.outgoing),
+      editors: list.editors.map(UserTransformer.outgoing)
     };
   }
 }

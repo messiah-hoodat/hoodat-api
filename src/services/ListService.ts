@@ -37,6 +37,7 @@ class ListService {
     return await list
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner')
       .execPopulate();
   }
@@ -77,6 +78,7 @@ class ListService {
     return await list
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner')
       .execPopulate();
   }
@@ -143,6 +145,7 @@ class ListService {
     return await list
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner')
       .execPopulate();
   }
@@ -190,6 +193,7 @@ class ListService {
     return await list
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner')
       .execPopulate();
   }
@@ -200,6 +204,7 @@ class ListService {
     })
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner');
   }
 
@@ -211,6 +216,7 @@ class ListService {
     })
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner');
   }
 
@@ -248,6 +254,7 @@ class ListService {
     return await list
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner')
       .execPopulate();
   }
@@ -286,6 +293,7 @@ class ListService {
     return await list
       .populate('contacts')
       .populate('viewers')
+      .populate('editors')
       .populate('owner')
       .execPopulate();
   }

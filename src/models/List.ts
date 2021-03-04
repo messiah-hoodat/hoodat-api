@@ -9,6 +9,7 @@ export interface ListDocument extends mongoose.Document {
   color?: number;
   contacts?: ContactDocument['_id'][];
   viewers?: UserDocument['_id'][];
+  editors?: UserDocument['_id'][];
 }
 
 export const ListSchema = new mongoose.Schema({
@@ -33,6 +34,13 @@ export const ListSchema = new mongoose.Schema({
     },
   ],
   viewers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  editors: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
