@@ -5,6 +5,7 @@ import {
   AddContactInput,
   AddListInput,
   Role,
+  ShareListInput,
   UpdateListInput,
 } from '../controllers/ListController';
 import { Contact } from '../models/Contact';
@@ -290,6 +291,52 @@ class ListService {
     }
 
     MailService.sendListSharedEmail(email, user.name, list.name);
+
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('editors')
+      .populate('owner')
+      .execPopulate();
+  }
+
+  public async shareList(
+    input: ShareListInput,
+    listId: string,
+    userId: string
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+
+    const user = await UserService.getUser(userId);
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== user.id) {
+      throw Boom.forbidden(
+        'You must be the owner of the list to share it.'
+      );
+    }
+
+    const sharee = await UserService.getUserByEmail(input.email);
+    switch (input.role) {
+      case "viewer":
+        list.viewers.push(sharee.id);
+        break;
+      case "editor":
+        list.editors.push(sharee.id);
+        break;
+    }
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    MailService.sendListSharedEmail(input.email, user.name, list.name);
 
     return await list
       .populate('contacts')

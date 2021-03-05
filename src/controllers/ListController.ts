@@ -40,6 +40,11 @@ interface AddViewerInput {
   email: string;
 }
 
+export interface ShareListInput {
+  email: string;
+  role: Role
+}
+
 export type Role = "viewer" | "editor";
 
 export interface UpdateShareeInput {
@@ -176,6 +181,25 @@ export class ListController {
 
     return ListTransformer.outgoing(
       await ListService.addEditorToList(input.email, listId, token.userId)
+    );
+  }
+
+  /**
+   * Shares a list with someone
+   */
+  @Security('jwt')
+  @Response(403)
+  @Response(404, 'User not found')
+  @Post('{listId}/sharees')
+  public async shareList(
+    @Path() listId: string,
+    @Body() input: ShareListInput,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.shareList(input, listId, token.userId)
     );
   }
 
