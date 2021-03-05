@@ -346,6 +346,7 @@ class ListService {
       .execPopulate();
   }
 
+  // TODO: deprecate
   public async removeViewerFromList(
     viewerId: string,
     listId: string,
@@ -385,6 +386,7 @@ class ListService {
       .execPopulate();
   }
 
+  // TODO: deprecate
   public async removeEditorFromList(
     editorId: string,
     listId: string,
@@ -409,6 +411,46 @@ class ListService {
     }
 
     list.editors = list.editors.filter((id) => id.toString() !== editorId);
+
+    try {
+      await list.save();
+    } catch (err) {
+      throw Boom.internal('Error saving list: ', err);
+    }
+
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('editors')
+      .populate('owner')
+      .execPopulate();
+  }
+
+  public async unshareList(
+    shareeId: string,
+    listId: string,
+    requesterId: string
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    if (!mongoose.Types.ObjectId.isValid(shareeId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
+    const user = await UserService.getUser(requesterId);
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+    if (list.owner.toString() !== user.id) {
+      throw Boom.forbidden(
+        'You must be the owner of the list to remove an editor.'
+      );
+    }
+
+    list.editors = list.editors.filter((id) => id.toString() !== shareeId);
+    list.viewers = list.viewers.filter((id) => id.toString() !== shareeId);
 
     try {
       await list.save();

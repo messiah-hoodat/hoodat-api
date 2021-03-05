@@ -10,6 +10,7 @@ import {
   Body,
   Delete,
   Patch,
+  Deprecated,
 } from 'tsoa';
 
 import getDecodedToken from '../lib/getDecodedToken';
@@ -206,6 +207,7 @@ export class ListController {
   /**
    * Revokes a user's permission to view the list
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Delete('{listId}/viewers/{userId}')
@@ -224,10 +226,29 @@ export class ListController {
   /**
    * Revokes a user's permission to edit the list
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Delete('{listId}/editors/{userId}')
   public async removeEditorFromList(
+    @Path() listId: string,
+    @Path() userId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.removeEditorFromList(userId, listId, token.userId)
+    );
+  }
+
+  /**
+   * Unshares the list with someone
+   */
+  @Security('jwt')
+  @Response(403)
+  @Delete('{listId}/sharees/{userId}')
+  public async unshareList(
     @Path() listId: string,
     @Path() userId: string,
     @Header('Authorization') authHeader: string
