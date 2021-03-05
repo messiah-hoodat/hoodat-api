@@ -14,7 +14,7 @@ import {
 } from 'tsoa';
 
 import getDecodedToken from '../lib/getDecodedToken';
-import { ListOutput, ListTransformer } from '../transformers/ListTransformer';
+import { ListOutput, ListTransformer, ListShareesOutput } from '../transformers/ListTransformer';
 import ListService from '../services/ListService';
 
 export interface AddListInput {
@@ -201,6 +201,23 @@ export class ListController {
 
     return ListTransformer.outgoing(
       await ListService.shareList(input, listId, token.userId)
+    );
+  }
+
+  /**
+   * Fetches list sharees
+   */
+  @Security('jwt')
+  @Response(403)
+  @Get('{listId}/sharees')
+  public async getListSharees(
+    @Path() listId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListShareesOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoingSharees(
+      await ListService.getListSharees(listId, token.userId)
     );
   }
 

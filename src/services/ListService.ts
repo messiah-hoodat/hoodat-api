@@ -346,6 +346,39 @@ class ListService {
       .execPopulate();
   }
 
+  public async getListSharees(
+    listId: string,
+    userId: string
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+
+    const user = await UserService.getUser(userId);
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+
+    const isOwner = list.owner.toString() == user.id;
+    const isViewer = list.viewers.includes(user.id);
+    const isEditor = list.editors.includes(user.id);
+
+    if (!(isOwner || isViewer || isEditor)) {
+      throw Boom.forbidden(
+        'You do not have permission to access this list.'
+      );
+    }
+
+
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('editors')
+      .populate('owner')
+      .execPopulate();
+  }
+
   // TODO: deprecate
   public async removeViewerFromList(
     viewerId: string,

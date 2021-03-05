@@ -13,6 +13,13 @@ export interface ListOutput {
   editors: UserOutput[];
 }
 
+export interface ListShareesOutput {
+  id: string
+  owner: UserOutput;
+  viewers: UserOutput[];
+  editors: UserOutput[];
+}
+
 export interface PopulatedListDocument extends ListDocument {
   contacts?: ContactDocument[];
 }
@@ -25,6 +32,15 @@ export class ListTransformer {
       owner: UserTransformer.outgoing(list.owner),
       color: list.color,
       contacts: list.contacts.map(ContactTransformer.outgoing),
+      viewers: list.viewers.map(UserTransformer.outgoing),
+      editors: list.editors.map(UserTransformer.outgoing)
+    };
+  }
+
+  static outgoingSharees(list: PopulatedListDocument): ListShareesOutput {
+    return {
+      id: list.id,
+      owner: UserTransformer.outgoing(list.owner),
       viewers: list.viewers.map(UserTransformer.outgoing),
       editors: list.editors.map(UserTransformer.outgoing)
     };
