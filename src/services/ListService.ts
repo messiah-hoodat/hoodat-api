@@ -130,7 +130,10 @@ class ListService {
     if (!list) {
       throw Boom.notFound('List does not exist');
     }
-    if (list.owner.toString() !== userId) {
+
+    const isOwner = list.owner.toString() === userId;
+    const isEditor = list.editors.includes(userId);
+    if (!(isOwner || isEditor)) {
       throw Boom.forbidden('You do not have permission to update this list');
     }
 
@@ -171,7 +174,10 @@ class ListService {
     if (!list) {
       throw Boom.notFound('List does not exist');
     }
-    if (list.owner.toString() !== userId) {
+
+    const isOwner = list.owner.toString() === userId;
+    const isEditor = list.editors.includes(userId);
+    if (!(isOwner || isEditor)) {
       throw Boom.forbidden('You do not have permission to update this list');
     }
 
@@ -214,7 +220,14 @@ class ListService {
     userId: string
   ): Promise<PopulatedListDocument[]> {
     return await List.find({
-      viewers: userId,
+      $or: [
+        {
+          viewers: userId
+        },
+        {
+          editors: userId
+        }
+      ]
     })
       .populate('contacts')
       .populate('viewers')
@@ -314,9 +327,12 @@ class ListService {
     if (!list) {
       throw Boom.notFound('List does not exist');
     }
-    if (list.owner.toString() !== user.id) {
+
+    const isOwner = list.owner.toString() === userId;
+    const isEditor = list.editors.includes(userId);
+    if (!(isOwner || isEditor)) {
       throw Boom.forbidden(
-        'You must be the owner of the list to share it.'
+        'You do not have permission to share this list'
       );
     }
 
