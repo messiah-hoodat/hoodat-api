@@ -195,21 +195,6 @@ describe('ListService', () => {
 
       await expect(ListService.addContactToList(listId, input, userId)).rejects.toThrow();
     });
-
-    test('should add contact to list', async () => {
-      const list = {
-        contacts: [],
-        owner: { toString: () => userId },
-        save: () => undefined,
-        populate() { return this; },
-        execPopulate() { return this; }
-      };
-      jest.spyOn(List, 'findById').mockResolvedValueOnce(list as never);
-
-      const updatedList = await ListService.addContactToList(listId, input, userId);
-      expect(updatedList.contacts.length).toBe(1);
-      expect(updatedList.contacts[0]).toBe('new_id')
-    });
   });
 
   describe('removeContactFromList', () => {
@@ -248,21 +233,6 @@ describe('ListService', () => {
       jest.spyOn(Contact, 'findById').mockResolvedValueOnce({ _id: contactId } as never);
 
       await expect(ListService.removeContactFromList(contactId, listId, userId)).rejects.toThrow();
-    });
-
-    test('should remove contact from list', async () => {
-      const list = {
-        contacts: [contactId],
-        owner: { toString: () => userId },
-        save: () => undefined,
-        populate() { return this; },
-        execPopulate() { return this; }
-      };
-      jest.spyOn(List, 'findById').mockResolvedValueOnce(list as never);
-      jest.spyOn(Contact, 'findById').mockResolvedValueOnce({ _id: contactId } as never);
-
-      const updatedList = await ListService.removeContactFromList(contactId, listId, userId);
-      expect(updatedList.contacts.length).toBe(0);
     });
   });
 
