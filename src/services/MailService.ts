@@ -60,11 +60,7 @@ class MailService {
     }
   }
 
-  public async sendListSharedEmail(
-    to: string,
-    from: string,
-    listName: string
-  ): Promise<void> {
+  public async sendListSharedEmail(to: string, from: string, listName: string): Promise<void> {
     const mailOptions = {
       from: {
         name: 'Hoodat Team',
