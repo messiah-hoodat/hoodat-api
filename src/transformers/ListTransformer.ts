@@ -14,7 +14,7 @@ export interface ListOutput {
 }
 
 export interface ListShareesOutput {
-  id: string
+  id: string;
   owner: UserOutput;
   viewers: UserOutput[];
   editors: UserOutput[];
@@ -33,7 +33,7 @@ export class ListTransformer {
       color: list.color,
       contacts: list.contacts.map(ContactTransformer.outgoing),
       viewers: list.viewers.map(UserTransformer.outgoing),
-      editors: list.editors.map(UserTransformer.outgoing)
+      editors: list.editors.map(UserTransformer.outgoing),
     };
   }
 
@@ -42,7 +42,7 @@ export class ListTransformer {
       id: list.id,
       owner: UserTransformer.outgoing(list.owner),
       viewers: list.viewers.map(UserTransformer.outgoing),
-      editors: list.editors.map(UserTransformer.outgoing)
+      editors: list.editors.map(UserTransformer.outgoing),
     };
   }
 }

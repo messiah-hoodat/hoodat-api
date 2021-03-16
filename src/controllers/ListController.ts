@@ -14,7 +14,11 @@ import {
 } from 'tsoa';
 
 import getDecodedToken from '../lib/getDecodedToken';
-import { ListOutput, ListTransformer, ListShareesOutput } from '../transformers/ListTransformer';
+import {
+  ListOutput,
+  ListTransformer,
+  ListShareesOutput,
+} from '../transformers/ListTransformer';
 import ListService from '../services/ListService';
 
 export interface AddListInput {
@@ -43,13 +47,13 @@ interface AddViewerInput {
 
 export interface ShareListInput {
   email: string;
-  role: Role
+  role: Role;
 }
 
-export type Role = "viewer" | "editor";
+export type Role = 'viewer' | 'editor';
 
 export interface UpdateShareeInput {
-  role: Role
+  role: Role;
 }
 
 @Route('/lists')
@@ -150,6 +154,7 @@ export class ListController {
   /**
    * Allows a user to view the list
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Response(404, 'User not found')
@@ -169,6 +174,7 @@ export class ListController {
   /**
    * Allows a user to edit the list
    */
+  @Deprecated()
   @Security('jwt')
   @Response(403)
   @Response(404, 'User not found')
