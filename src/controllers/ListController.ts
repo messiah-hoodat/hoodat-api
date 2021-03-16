@@ -50,7 +50,7 @@ export interface ShareListInput {
   role: Role;
 }
 
-export type Role = 'viewer' | 'editor';
+export type Role = 'viewer' | 'editor' | 'owner';
 
 export interface UpdateShareeInput {
   role: Role;
