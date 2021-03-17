@@ -14,6 +14,7 @@ import { PopulatedListDocument } from '../transformers/ListTransformer';
 import ContactService from './ContactService';
 import UserService from './UserService';
 import MailService from './MailService';
+import { values } from 'lodash';
 
 class ListService {
   public async createList(
@@ -336,7 +337,13 @@ class ListService {
 
     const sharee = await UserService.getUserByEmail(input.email);
 
-    if ([list.owner, ...list.viewers, ...list.editors].includes(sharee._id)) {
+    if (
+      [
+        list.owner.toString(),
+        ...list.viewers.map((id) => id.toString()),
+        ...list.editors.map((id) => id.toString()),
+      ].includes(sharee.id)
+    ) {
       throw Boom.conflict('The list is already shared with that user');
     }
 
