@@ -222,12 +222,12 @@ class ListService {
     return await List.find({
       $or: [
         {
-          viewers: userId
+          viewers: userId,
         },
         {
-          editors: userId
-        }
-      ]
+          editors: userId,
+        },
+      ],
     })
       .populate('contacts')
       .populate('viewers')
@@ -331,17 +331,19 @@ class ListService {
     const isOwner = list.owner.toString() === userId;
     const isEditor = list.editors.includes(userId);
     if (!(isOwner || isEditor)) {
-      throw Boom.forbidden(
-        'You do not have permission to share this list'
-      );
+      throw Boom.forbidden('You do not have permission to share this list');
     }
 
     const sharee = await UserService.getUserByEmail(input.email);
+
+    list.editors = list.editors.filter((id) => id.toString() !== sharee.id);
+    list.viewers = list.viewers.filter((id) => id.toString() !== sharee.id);
+
     switch (input.role) {
-      case "viewer":
+      case 'viewer':
         list.viewers.push(sharee.id);
         break;
-      case "editor":
+      case 'editor':
         list.editors.push(sharee.id);
         break;
     }
@@ -381,11 +383,8 @@ class ListService {
     const isEditor = list.editors.includes(user.id);
 
     if (!(isOwner || isViewer || isEditor)) {
-      throw Boom.forbidden(
-        'You do not have permission to access this list.'
-      );
+      throw Boom.forbidden('You do not have permission to access this list.');
     }
-
 
     return await list
       .populate('contacts')
@@ -542,11 +541,11 @@ class ListService {
     const sharee = await UserService.getUser(shareeId);
 
     switch (role) {
-      case "viewer":
+      case 'viewer':
         list.editors = list.editors.filter((id) => id.toString() !== shareeId);
         list.viewers.push(sharee.id);
         break;
-      case "editor":
+      case 'editor':
         list.viewers = list.viewers.filter((id) => id.toString() !== shareeId);
         list.editors.push(sharee.id);
         break;
