@@ -336,11 +336,7 @@ class ListService {
 
     const sharee = await UserService.getUserByEmail(input.email);
 
-    if (
-      [list.owner, ...list.viewers, ...list.editors].includes(
-        sharee.id.toString()
-      )
-    ) {
+    if ([list.owner, ...list.viewers, ...list.editors].includes(sharee._id)) {
       throw Boom.conflict('The list is already shared with that user');
     }
 
