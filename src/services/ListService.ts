@@ -540,13 +540,14 @@ class ListService {
 
     const sharee = await UserService.getUser(shareeId);
 
+    list.editors = list.editors.filter((id) => id.toString() !== shareeId);
+    list.viewers = list.viewers.filter((id) => id.toString() !== shareeId);
+
     switch (role) {
       case 'viewer':
-        list.editors = list.editors.filter((id) => id.toString() !== shareeId);
         list.viewers.push(sharee.id);
         break;
       case 'editor':
-        list.viewers = list.viewers.filter((id) => id.toString() !== shareeId);
         list.editors.push(sharee.id);
         break;
     }
