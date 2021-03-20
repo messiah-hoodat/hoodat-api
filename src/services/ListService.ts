@@ -45,6 +45,37 @@ class ListService {
       .execPopulate();
   }
 
+  public async getList(
+    listId: string,
+    userId: string
+  ): Promise<PopulatedListDocument> {
+    if (!mongoose.Types.ObjectId.isValid(listId)) {
+      throw Boom.badRequest('Invalid list ID');
+    }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw Boom.badRequest('Invalid user ID');
+    }
+
+    const list = await List.findById(listId);
+    if (!list) {
+      throw Boom.notFound('List does not exist');
+    }
+
+    const isOwner = list.owner.toString() === userId;
+    const isEditor = list.editors.includes(userId);
+    const isViewer = list.viewers.includes(userId);
+    if (!(isOwner || isEditor || isViewer)) {
+      throw Boom.forbidden('You do not have permission to view this list');
+    }
+
+    return await list
+      .populate('contacts')
+      .populate('viewers')
+      .populate('editors')
+      .populate('owner')
+      .execPopulate();
+  }
+
   public async updateList(
     listId: string,
     input: UpdateListInput,

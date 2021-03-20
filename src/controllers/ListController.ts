@@ -77,6 +77,22 @@ export class ListController {
   }
 
   /**
+   * Fetches a specific list
+   */
+  @Security('jwt')
+  @Get('{listId}')
+  public async getList(
+    @Path() listId: string,
+    @Header('Authorization') authHeader: string
+  ): Promise<ListOutput> {
+    const token = getDecodedToken(authHeader);
+
+    return ListTransformer.outgoing(
+      await ListService.getList(listId, token.userId)
+    );
+  }
+
+  /**
    * Updates a list
    */
   @Security('jwt')
